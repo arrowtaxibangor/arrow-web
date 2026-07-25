@@ -30,6 +30,11 @@ export const NavItems = [
   //   href: '/top-destinations',
   // },
   {
+    key: '6',
+    label: 'Blog',
+    href: '/blog',
+  },
+  {
     key: '7',
     label: 'Contact',
     href: '/contact',

@@ -82,6 +82,12 @@ export const FooterComponent = () => {
           >
             Airport Transfers
           </Link>
+          <Link
+            href="/blog"
+            className="block hover:underline font-[400] text-[16px] leading-[22px]"
+          >
+            Blog
+          </Link>
         </Col>
 
         <Col

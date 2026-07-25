@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
+import { SeoAssist } from '@/components/admin/ai/SeoAssist';
 
 const CATEGORIES = ['Local Guide', 'Airport Tips', 'Snowdonia', 'News', 'Travel Tips'] as const;
 
@@ -369,6 +370,14 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
                 <CardTitle className="text-sm">SEO</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <SeoAssist
+                  type="blog"
+                  getContext={() => ({ title: watch('title'), content })}
+                  onApply={(fields) => {
+                    setValue('meta_title', fields.meta_title);
+                    setValue('meta_description', fields.meta_description);
+                  }}
+                />
                 <div>
                   <Label htmlFor="meta_title" className="text-xs">
                     Meta title

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageHeader } from '@/components/admin/ui/PageHeader';
+import { SeoAssist } from '@/components/admin/ai/SeoAssist';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -254,6 +255,21 @@ export function PageEditForm({ page }: { page?: CmsPage }) {
                 <CardTitle className="text-sm">SEO</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
+                <SeoAssist
+                  type="page"
+                  getContext={() => ({
+                    title: watch('title'),
+                    content: sections
+                      .filter((s) => s.type === 'TEXT')
+                      .map((s) => s.content ?? '')
+                      .join(' '),
+                  })}
+                  onApply={(fields) => {
+                    setValue('meta_title', fields.meta_title);
+                    setValue('meta_description', fields.meta_description);
+                    setValue('meta_keywords', fields.meta_keywords);
+                  }}
+                />
                 <div>
                   <Label htmlFor="meta_title" className="text-xs">
                     Meta title

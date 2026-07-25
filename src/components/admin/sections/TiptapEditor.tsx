@@ -1,10 +1,11 @@
 'use client';
 import { useEditor, EditorContent } from '@tiptap/react';
+import { useState } from 'react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import { cn } from '@/lib/utils';
-import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2 } from 'lucide-react';
+import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Sparkles } from 'lucide-react';
 
 interface TiptapEditorProps {
   content: string;
@@ -14,6 +15,8 @@ interface TiptapEditorProps {
 }
 
 export function TiptapEditor({ content, onChange, placeholder, className }: TiptapEditorProps) {
+  const [improving, setImproving] = useState(false);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -97,6 +100,48 @@ export function TiptapEditor({ content, onChange, placeholder, className }: Tipt
         >
           <Link2 className="h-3.5 w-3.5" />
         </ToolbarBtn>
+        <div className="w-px h-5 bg-gray-300 mx-1 self-center" />
+        <button
+          type="button"
+          disabled={improving}
+          onClick={async () => {
+            const html = editor.getHTML();
+            if (!html || html === '<p></p>') return;
+            setImproving(true);
+            try {
+              const res = await fetch('/api/ai/improve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ html }),
+              });
+              if (!res.ok) return;
+              const reader = res.body!.getReader();
+              const decoder = new TextDecoder();
+              let improved = '';
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                improved += decoder.decode(value, { stream: true });
+              }
+              if (improved) {
+                editor.commands.setContent(improved);
+                onChange(improved);
+              }
+            } finally {
+              setImproving(false);
+            }
+          }}
+          className={cn(
+            'px-2 py-1 rounded text-xs font-medium flex items-center gap-1 transition-colors',
+            improving
+              ? 'opacity-50 cursor-not-allowed bg-muted text-muted-foreground'
+              : 'hover:bg-blue-50 text-blue-700'
+          )}
+          title="Improve with AI"
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          {improving ? 'Improving…' : 'Improve'}
+        </button>
       </div>
       <EditorContent
         editor={editor}

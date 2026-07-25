@@ -3,6 +3,7 @@ import { DraggableProvided } from '@hello-pangea/dnd';
 import { GripVertical, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { TiptapEditor } from './TiptapEditor';
+import { GeneratePanel } from '@/components/admin/ai/GeneratePanel';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -72,11 +73,16 @@ export function SectionCard({
       {!collapsed && (
         <div className="p-3 space-y-3">
           {section.type === 'TEXT' && (
-            <TiptapEditor
-              content={section.content ?? ''}
-              onChange={(html) => update({ content: html })}
-              placeholder="Enter text content..."
-            />
+            <>
+              <TiptapEditor
+                content={section.content ?? ''}
+                onChange={(html) => update({ content: html })}
+                placeholder="Enter text content..."
+              />
+              <GeneratePanel
+                onInsert={(html) => update({ content: (section.content ?? '') + html })}
+              />
+            </>
           )}
           {section.type === 'IMAGE' && (
             <>
