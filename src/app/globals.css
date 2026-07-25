@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+body {
+  background-color: #fff !important;
+  font-family: 'Roboto', Arial, Helvetica, sans-serif !important;
+}
+/* .nav > ul > li {
+  padding: 0 !important;
+  color: #2a5ba5 !important;
+  font-size: 1rem;
+  height: 30px;
+  display: flex !important;
+  justify-content: start;
+  align-items: center;
+  transition: color 0.3s, text-decoration 0.3s;
+}*/
+.nav > ul > li :hover {
+  color: #384f72ec !important;
+  text-decoration: underline !important;
+}
+/* .headerParent {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.headerChild {
+  text-align: center;
+} */
+
+.headerChildLeft {
+  justify-self: start;
+}
+
+/* .headerChildCenter {
+  justify-self: center;
+} */
+
+.headerChildRight {
+  justify-self: end;
+}
+
+.ant-menu-item-selected {
+  background-color: transparent !important;
+}
+.footer > ul > li {
+  color: #2a5ba5 !important;
+  padding: 0 !important;
+  font-size: 1rem;
+  height: 25px !important;
+  display: flex !important;
+  justify-content: start;
+  align-items: center;
+}
+.footer > ul > li :hover {
+  color: #384f72ec !important;
+  text-decoration: underline !important;
+}
+.bookingForm .ant-form-item-required {
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 100% !important;
+}
+.costDistanceDiv {
+  margin-bottom: 0.8rem !important;
+}
+
+.airProtRuns ul {
+  list-style: disc !important;
+  padding-left: 1rem;
+}
+.bookingForm label {
+  color: #fff !important;
+}
+
+/* Change the border on hover of input to green */
+input.ant-input:focus,
+input.ant-input:hover,
+input.ant-input:active {
+  border-color: #63ab45 !important;
+}
+
+.ant-picker-outlined:focus,
+.ant-picker-outlined:hover,
+.ant-picker-outlined:active {
+  border-color: #63ab45 !important;
+}
+
+.ant-input-outlined:focus,
+.ant-input-outlined:hover,
+.ant-picker-outlined:active {
+  border-color: #63ab45 !important;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input {
+    font-size: 16px !important;
+  }
+}
+.custom-timepicker-popup {
+  min-width: 200px !important; /* Set a minimum width */
+}
+.custom-timepicker-popup .ant-picker-time-panel {
+  width: 100% !important; /* Ensure the internal panel matches the new width */
+}
+
+.custom-timepicker-popup .ant-picker-panel-container {
+  width: 100% !important; /* Ensure child panel respects the width */
+}
+
+.custom-timepicker-popup .ant-picker-content ul:first-child {
+  width: 50% !important;
+  overflow-y: auto !important;
+}
+
+.custom-timepicker-popup .ant-picker-content ul:last-child {
+  width: 100% !important;
+  overflow-y: auto !important;
+}
+.custom-timepicker-popup .ant-picker-panel-layout div:first-child {
+  width: 100% !important;
+}
+.custom-timepicker-popup .ant-picker-footer .ant-picker-ranges {
+  width: 100% !important;
+}
+
+.time-input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* @media (max-width: 640px) {
+  .headerParent {
+    display: grid;
+    grid-template-columns: fit-content(100%) 1fr;
+  }
+} */
+
+.navMenu li {
+  border: none !important;
+}
+.navMenu li::after {
+  border-bottom-width: 0px !important;
+  border-bottom-color: #ffffff00 !important;
+}
+.navMenu li:focus-visible {
+  outline: 0px solid #91caff00 !important;
+}
+.bannerRating .ant-rate-star-half .ant-rate-star-second svg {
+  fill: grey !important;
+}
+.bannerRating .ant-rate-star-zero svg {
+  fill: grey !important;
+}
+.contactForm label::before {
+  display: none !important;
+}
+.bookingForm .ant-select-selector {
+  border-radius: 2px !important;
+}
+/* global.css */
+.navMenu .ant-menu-item-selected a {
+  @apply underline underline-offset-4 !text-primary_color !font-[700] !text-[18px];
+}
+
+.white-placeholder .ant-select-selection-placeholder {
+  color: white !important;
+}
+
+.PhoneInputCountry {
+  margin-right: 0px !important;
+  background-color: white !important;
+  padding-left: 5px !important;
+  height: 35px !important;
+  border-radius: 3px 0px 0px 3px !important;
+}
+.PhoneInputInput {
+  height: 35px !important;
+  border-radius: 0px 3px 3px 0px !important;
+}
+
+/* Default (desktop) */
+.bookingForm {
+  font-size: 16px !important;
+}
+
+/* Labels */
+.bookingForm .ant-form-item-label > label {
+  font-size: 16px !important;
+  font-weight: 500;
+}
+
+/* Inputs, selects, textareas */
+.bookingForm .ant-input,
+.bookingForm .ant-input-number,
+.bookingForm .ant-select-selector,
+.bookingForm .ant-picker,
+.bookingForm textarea {
+  font-size: 16px !important;
+}
+
+/* Placeholder text */
+.bookingForm input::placeholder,
+.bookingForm textarea::placeholder {
+  font-size: 16px !important;
+}
+
+/* Buttons */
+.bookingForm .ant-btn {
+  font-size: 16px !important;
+}
+
+/* Radio + checkbox text */
+.bookingForm .ant-radio-wrapper,
+.bookingForm .ant-checkbox-wrapper {
+  font-size: 16px !important;
+}
+
+/* Date picker input */
+.bookingForm .ant-picker-input > input {
+  font-size: 16px !important;
+}
+
+/* Select dropdown */
+.ant-select-dropdown {
+  font-size: 16px !important;
+}
+
+/* ========================= */
+/* 📱 Mobile screens override */
+/* ========================= */
+@media (max-width: 768px) {
+  .bookingForm {
+    font-size: 18px !important;
+  }
+
+  .bookingForm .ant-form-item-label > label,
+  .bookingForm .ant-input,
+  .bookingForm .ant-input-number,
+  .bookingForm .ant-select-selector,
+  .bookingForm .ant-picker,
+  .bookingForm textarea,
+  .bookingForm .ant-btn,
+  .bookingForm .ant-radio-wrapper,
+  .bookingForm .ant-checkbox-wrapper,
+  .bookingForm .ant-picker-input > input {
+    font-size: 18px !important;
+  }
+
+  .bookingForm input::placeholder,
+  .bookingForm textarea::placeholder {
+    font-size: 18px !important;
+  }
+}
+
+/* ===================== */
+/* Admin CMS scoped vars */
+/* ===================== */
+.admin-root {
+  --background: 0 0% 98%;
+  --foreground: 215 25% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 25% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 25% 12%;
+  --primary: 214 63% 40%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 47 100% 50%;
+  --secondary-foreground: 0 0% 0%;
+  --muted: 210 20% 94%;
+  --muted-foreground: 215 15% 50%;
+  --accent: 210 20% 94%;
+  --accent-foreground: 215 25% 12%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 20% 88%;
+  --input: 214 20% 88%;
+  --ring: 214 63% 40%;
+  --radius: 0.5rem;
+}
