@@ -1,14 +1,15 @@
-import { getSiteSetting, type CmsPage } from '@/lib/supabase/cms';
+import type { CmsPage } from '@/lib/supabase/cms';
 import AdCodeSection from '@/components/DynamicPage/AdCodeSection';
 
-// Server component — renders CmsSection[] fetched from Supabase.
 // TEXT/content is stored as admin-authored HTML. Since only the single admin
 // account writes this content, dangerouslySetInnerHTML is acceptable.
-// Phase 2: sanitize HTML server-side with `sanitize-html` before saving,
-// so content stored in the DB is already clean at render time.
-export default async function CmsPageRenderer({ page }: { page: CmsPage }) {
-  const bookingUrl = (await getSiteSetting('booking_url')) ?? '#';
-
+export default function CmsPageRenderer({
+  page,
+  bookingUrl,
+}: {
+  page: CmsPage;
+  bookingUrl: string;
+}) {
   return (
     <div className="w-full py-20 mobile:py-14 flex flex-col gap-5">
       {page.sections?.map((section) => {

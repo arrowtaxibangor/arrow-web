@@ -31,7 +31,7 @@ import { CheckboxChangeEvent, CheckboxProps } from 'antd/es/checkbox';
 import moment from 'moment-timezone';
 import { useMultipleVehiclesFare } from '../../../utils/useCalculateMultiVehicleFare';
 import { VehicleSelectionCards } from './VehicleSelectionCards';
-import { getSetting } from '../../../services/setting..service';
+import { getSetting } from '../../../services/settings.service';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import useLocationSet from '../../../Hooks/useLocationSet';

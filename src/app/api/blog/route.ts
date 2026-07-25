@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getIronSession } from 'iron-session';
+import { cookies } from 'next/headers';
 import { createBlogPost, listBlogPosts } from '@/lib/supabase/blog';
+import { sessionOptions, type SessionData } from '@/lib/auth/session';
+
+async function requireAdmin() {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+  if (!session.isLoggedIn) throw new Error('Unauthorized');
+}
 
 // GET /api/blog — public; returns published posts
 export async function GET(req: NextRequest) {
