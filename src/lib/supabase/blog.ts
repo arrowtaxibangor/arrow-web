@@ -252,9 +252,14 @@ export async function listAllCommentsAdmin(filter?: {
 
   return (data ?? []).map((c: Record<string, unknown>) => {
     const posts = c.blog_posts as { slug: string; title: string } | null;
-    const { blog_posts: _bp, ...rest } = c;
     return {
-      ...(rest as BlogComment),
+      id: c.id as string,
+      post_id: c.post_id as string,
+      author_name: c.author_name as string,
+      author_email: c.author_email as string,
+      content: c.content as string,
+      approved: c.approved as boolean,
+      created_at: c.created_at as string,
       post_slug: posts?.slug ?? '',
       post_title: posts?.title ?? 'Unknown',
     };
