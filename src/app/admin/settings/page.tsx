@@ -31,7 +31,8 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ booking_url: bookingUrl }),
       });
-      if (!res.ok) throw new Error('Failed');
+      if (res.status === 401) throw new Error('Session expired — please log out and log in again.');
+      if (!res.ok) throw new Error(`Server error (${res.status}) — check Vercel logs.`);
       setFeedback({ type: 'success', message: 'Booking URL saved successfully.' });
     } catch {
       setFeedback({ type: 'error', message: 'Failed to save. Try again.' });
