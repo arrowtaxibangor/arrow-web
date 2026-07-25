@@ -7,11 +7,16 @@ import { sessionOptions, type SessionData } from '@/lib/auth/session';
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();
 
-  if (
-    email !== process.env.ADMIN_EMAIL ||
-    !password ||
-    !(await bcrypt.compare(password, process.env.ADMIN_PASSWORD_HASH ?? ''))
-  ) {
+  // TEMP DEBUG — remove after diagnosing login failure
+  const storedHash = process.env.ADMIN_PASSWORD_HASH ?? '';
+  const compareResult = password ? await bcrypt.compare(password, storedHash) : false;
+  console.log('[login-debug] ADMIN_PASSWORD_HASH defined:', !!process.env.ADMIN_PASSWORD_HASH);
+  console.log('[login-debug] ADMIN_PASSWORD_HASH length:', storedHash.length);
+  console.log('[login-debug] ADMIN_EMAIL match:', email === process.env.ADMIN_EMAIL);
+  console.log('[login-debug] bcrypt.compare result:', compareResult);
+  // END TEMP DEBUG
+
+  if (email !== process.env.ADMIN_EMAIL || !password || !compareResult) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
 
