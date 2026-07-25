@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { WriterProfile } from '@/lib/supabase/blog';
+import { ImageField } from '@/components/admin/ui/ImageField';
 
 const EMPTY = {
   name: '',
@@ -178,7 +179,6 @@ export default function WritersPage() {
                 ['name', 'Name *'],
                 ['role', 'Role'],
                 ['email', 'Email'],
-                ['avatar_url', 'Avatar URL'],
                 ['twitter_handle', 'Twitter handle'],
                 ['linkedin_url', 'LinkedIn URL'],
               ] as [keyof typeof form, string][]
@@ -195,6 +195,11 @@ export default function WritersPage() {
                 />
               </div>
             ))}
+            <ImageField
+              label="Avatar"
+              value={form.avatar_url}
+              onChange={(url) => setForm((f) => ({ ...f, avatar_url: url }))}
+            />
             <div>
               <Label htmlFor="bio" className="text-xs">
                 Bio

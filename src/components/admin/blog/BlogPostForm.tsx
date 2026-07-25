@@ -22,6 +22,7 @@ import {
 import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { ConfirmDialog } from '@/components/admin/ui/ConfirmDialog';
 import { SeoAssist } from '@/components/admin/ai/SeoAssist';
+import { ImageField } from '@/components/admin/ui/ImageField';
 
 const CATEGORIES = ['Local Guide', 'Airport Tips', 'Snowdonia', 'News', 'Travel Tips'] as const;
 
@@ -352,14 +353,10 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
                   />
                 </div>
                 <div>
-                  <Label htmlFor="cover_image_url" className="text-xs">
-                    Cover image URL
-                  </Label>
-                  <Input
-                    id="cover_image_url"
-                    {...register('cover_image_url')}
-                    className="mt-1 text-sm"
-                    placeholder="https://..."
+                  <ImageField
+                    label="Cover image"
+                    value={watch('cover_image_url')}
+                    onChange={(url) => setValue('cover_image_url', url)}
                   />
                 </div>
               </CardContent>

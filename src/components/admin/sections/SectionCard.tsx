@@ -4,6 +4,7 @@ import { GripVertical, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { TiptapEditor } from './TiptapEditor';
 import { GeneratePanel } from '@/components/admin/ai/GeneratePanel';
+import { ImageField } from '@/components/admin/ui/ImageField';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
@@ -85,18 +86,12 @@ export function SectionCard({
             </>
           )}
           {section.type === 'IMAGE' && (
-            <>
-              <Input
-                placeholder="Image URL"
-                value={section.image_url ?? ''}
-                onChange={(e) => update({ image_url: e.target.value })}
-              />
-              <Input
-                placeholder="Alt text"
-                value={section.image_alt ?? ''}
-                onChange={(e) => update({ image_alt: e.target.value })}
-              />
-            </>
+            <ImageField
+              value={section.image_url ?? ''}
+              onChange={(url) => update({ image_url: url })}
+              alt={section.image_alt ?? ''}
+              onAltChange={(alt) => update({ image_alt: alt })}
+            />
           )}
           {section.type === 'BUTTON' && (
             <>

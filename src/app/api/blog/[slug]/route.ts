@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 import { deleteBlogPost, getBlogPostWithWriter, updateBlogPost } from '@/lib/supabase/blog';
 import { sessionOptions, type SessionData } from '@/lib/auth/session';
+import { isProxyUrl, extractPublicId, deleteFromCloudinary } from '@/lib/cloudinary';
 
 type Params = { params: { slug: string } };
 
@@ -30,7 +31,18 @@ export async function PUT(req: NextRequest, { params }: Params) {
   try {
     await requireAdmin();
     const body = await req.json();
+
+    const oldPost = await getBlogPostWithWriter(params.slug);
     const post = await updateBlogPost(params.slug, body);
+
+    // Delete the replaced cover image from Cloudinary (fire-and-forget)
+    const oldUrl = oldPost?.cover_image_url;
+    const newUrl = body.cover_image_url ?? null;
+    if (oldUrl && oldUrl !== newUrl && isProxyUrl(oldUrl)) {
+      const pid = extractPublicId(oldUrl);
+      if (pid) deleteFromCloudinary(pid).catch(console.error);
+    }
+
     return NextResponse.json({ post });
   } catch (err: unknown) {
     if (err instanceof Error && err.message === 'Unauthorized') {

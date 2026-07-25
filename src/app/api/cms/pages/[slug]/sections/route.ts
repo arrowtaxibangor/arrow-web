@@ -3,6 +3,7 @@ import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 import { getPageBySlug, replacePageSections } from '@/lib/supabase/cms';
 import { sessionOptions, type SessionData } from '@/lib/auth/session';
+import { isProxyUrl, extractPublicId, deleteFromCloudinary } from '@/lib/cloudinary';
 
 type Params = { params: { slug: string } };
 
@@ -23,7 +24,26 @@ export async function PUT(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: 'sections must be an array' }, { status: 400 });
     }
 
+    // Collect proxy image URLs from old sections before replacing
+    const oldProxyUrls = new Set(
+      (page.sections ?? [])
+        .map((s) => s.image_url)
+        .filter((url): url is string => !!url && isProxyUrl(url))
+    );
+    const newImageUrls = new Set(
+      sections.map((s: { image_url?: string }) => s.image_url).filter(Boolean)
+    );
+
     const updated = await replacePageSections(page.id, sections);
+
+    // Delete orphaned proxy images (fire-and-forget)
+    oldProxyUrls.forEach((url) => {
+      if (!newImageUrls.has(url)) {
+        const pid = extractPublicId(url);
+        if (pid) deleteFromCloudinary(pid).catch(console.error);
+      }
+    });
+
     return NextResponse.json({ sections: updated });
   } catch (err: unknown) {
     if (err instanceof Error && err.message === 'Unauthorized') {
