@@ -141,9 +141,7 @@ export async function listAllPages(): Promise<CmsPage[]> {
   if (error) throw error;
   return (data ?? []).map((p) => ({
     ...p,
-    sections: ((p.cms_sections ?? []) as CmsSection[]).sort(
-      (a, b) => a.sort_order - b.sort_order
-    ),
+    sections: ((p.cms_sections ?? []) as CmsSection[]).sort((a, b) => a.sort_order - b.sort_order),
   }));
 }
 

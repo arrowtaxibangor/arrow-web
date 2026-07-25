@@ -17,6 +17,7 @@ There is no test suite configured in this project.
 ## Environment Variables
 
 Required variables (create a `.env.local` file):
+
 - `NEXT_PUBLIC_BACKEND_URL` — Base URL for the backend API (e.g., `https://api-arrowtaxi.binarymarvels.com`)
 - `NEXT_PUBLIC_MAP_API_KEY` — Google Maps JavaScript API key (needs Places, Geometry, and Directions libraries)
 
@@ -29,6 +30,7 @@ The axios client (`utils/axios.ts`) reads `NEXT_PUBLIC_BACKEND_URL` and attaches
 ### State Management
 
 Two Zustand stores in `store/useStore.ts`:
+
 - `useBookingStore` — holds computed `distance` / `returnDistance` (in miles) and `fare`; written by `BookingForm` after Google Maps DirectionsService resolves, read by fare calculation hooks
 - `useGoogleMapsStore` — tracks whether the Google Maps JS API has loaded (`isLoaded`)
 
@@ -47,6 +49,7 @@ The fare engine is split across two layers:
 ### Services Layer
 
 All API calls live in `services/` and import from `utils/axios.ts`. Key services:
+
 - `booking.ts` — create/get/update bookings
 - `vehicles.ts` — fetch vehicle types and get suggested vehicles by passenger count
 - `dynamicPages.service.ts` — CMS page content by slug
@@ -55,18 +58,18 @@ All API calls live in `services/` and import from `utils/axios.ts`. Key services
 
 ### Pages
 
-| Route | Purpose |
-|---|---|
-| `/` | Home: booking form + payment methods + areas we cover |
-| `/[slug]` | CMS-driven dynamic pages (ISR, 60s revalidation) |
-| `/airport-transfers` | Airport-specific booking form |
-| `/caernarfon-taxi`, `/snowdon-taxi`, `/luxury` | Specialised booking forms |
-| `/top-destinations` | Static content page |
-| `/contact` | Contact form |
-| `/complete-booking/[id]` | Driver-facing form to record the charged amount |
-| `/bookings/success` | Confirmation page after booking |
-| `/bookings/cancel` | Stripe payment cancelled |
-| `/thank-you` | Post-contact submission |
+| Route                                          | Purpose                                               |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| `/`                                            | Home: booking form + payment methods + areas we cover |
+| `/[slug]`                                      | CMS-driven dynamic pages (ISR, 60s revalidation)      |
+| `/airport-transfers`                           | Airport-specific booking form                         |
+| `/caernarfon-taxi`, `/snowdon-taxi`, `/luxury` | Specialised booking forms                             |
+| `/top-destinations`                            | Static content page                                   |
+| `/contact`                                     | Contact form                                          |
+| `/complete-booking/[id]`                       | Driver-facing form to record the charged amount       |
+| `/bookings/success`                            | Confirmation page after booking                       |
+| `/bookings/cancel`                             | Stripe payment cancelled                              |
+| `/thank-you`                                   | Post-contact submission                               |
 
 ### Routing & Navigation
 
@@ -75,6 +78,7 @@ Nav items are defined in `utils/NavItems.ts`. Dynamic CMS page slugs are fetched
 ### Styling
 
 Tailwind CSS with custom breakpoints (all `max-width` based):
+
 - `mobile`: 575px, `mobilelg`: 650px, `tablet`: 768px, `tabletlg`: 992px, `desktop`: 1200px
 
 Primary brand color: `#265EA6` (blue). Accent: `#FEC601` (yellow). Components use Ant Design 5 alongside Tailwind.

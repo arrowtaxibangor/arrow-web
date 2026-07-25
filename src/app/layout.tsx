@@ -18,6 +18,18 @@ export default function RootLayout({
   const pathname = usePathname();
   const [isCSSLoaded, setIsCSSLoaded] = useState(false);
 
+  useEffect(() => {
+    if (pathname?.startsWith('/admin')) return;
+    const checkStylesLoaded = () => {
+      if (document.styleSheets.length > 0) {
+        setIsCSSLoaded(true);
+      } else {
+        setTimeout(checkStylesLoaded, 100);
+      }
+    };
+    checkStylesLoaded();
+  }, [pathname]);
+
   if (pathname?.startsWith('/admin')) {
     return (
       <html lang="en">
@@ -25,19 +37,6 @@ export default function RootLayout({
       </html>
     );
   }
-
-  useEffect(() => {
-    const checkStylesLoaded = () => {
-      const stylesheets = document.styleSheets;
-      if (stylesheets.length > 0) {
-        setIsCSSLoaded(true);
-      } else {
-        setTimeout(checkStylesLoaded, 100);
-      }
-    };
-
-    checkStylesLoaded();
-  }, []);
   return (
     <html lang="en">
       <body className={`antialiased`}>

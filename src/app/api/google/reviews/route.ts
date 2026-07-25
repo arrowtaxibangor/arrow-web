@@ -17,7 +17,15 @@ export async function GET() {
     return NextResponse.json({ error: data.status }, { status: 502 });
   }
 
-  const reviews = (data.result.reviews ?? []).map((r: any) => ({
+  type GoogleReview = {
+    author_name: string;
+    profile_photo_url: string;
+    rating: number;
+    text: string;
+    relative_time_description: string;
+  };
+
+  const reviews = (data.result.reviews ?? []).map((r: GoogleReview) => ({
     name: r.author_name,
     profilePhoto: r.profile_photo_url,
     rating: r.rating,

@@ -20,7 +20,7 @@ requests to `/admin/**` on `arrow.taxi` return 404; requests to non-admin paths 
 Add a CNAME record wherever `arrow.taxi` is registered:
 
 | Type  | Name | Value                | TTL  |
-|-------|------|----------------------|------|
+| ----- | ---- | -------------------- | ---- |
 | CNAME | cms  | cname.vercel-dns.com | 3600 |
 
 Wait for DNS propagation (usually minutes, up to 24 h).
@@ -31,9 +31,9 @@ Wait for DNS propagation (usually minutes, up to 24 h).
 
 Set in **Vercel → Project → Settings → Environment Variables** (Production + Preview):
 
-| Variable                    | Description                                                                  |
-|-----------------------------|------------------------------------------------------------------------------|
-| `SESSION_SECRET`                | Random 32+ char string. Generate: `openssl rand -base64 32`                     |
+| Variable                        | Description                                                                      |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| `SESSION_SECRET`                | Random 32+ char string. Generate: `openssl rand -base64 32`                      |
 | `ADMIN_PASSWORD_HASH`           | bcrypt hash of admin password. Node.js: `require('bcryptjs').hashSync('pw', 12)` |
 | `NEXT_PUBLIC_SUPABASE_URL`      | Supabase project URL (e.g. `https://db.arrow.taxi`)                              |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public key — safe to expose, used by the public client             |

@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getIronSession } from 'iron-session';
+import { cookies } from 'next/headers';
 import { deleteComment, updateComment } from '@/lib/supabase/blog';
+import { sessionOptions, type SessionData } from '@/lib/auth/session';
 
 type Params = { params: { slug: string; id: string } };
 
-function isAdminAuthorized(req: NextRequest): boolean {
-  return req.headers.get('x-admin-key') === process.env.REVALIDATION_SECRET;
+async function requireAdmin() {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+  if (!session.isLoggedIn) throw new Error('Unauthorized');
 }
 
 // PUT /api/blog/[slug]/comments/[id] — admin only; approve or reject

@@ -12,51 +12,51 @@ Three Supabase tables power the blog.
 
 ### `blog_posts` — the primary content table
 
-| Field | Type | Purpose |
-|---|---|---|
-| `id` | `uuid` | Primary key, auto-generated |
-| `title` | `text` | Post title |
-| `slug` | `text` | Unique URL segment (`/blog/<slug>`) |
-| `excerpt` | `text \| null` | One-two sentence summary shown in listings |
-| `content` | `text` | Full body HTML (rich text from the editor) |
-| `cover_image_url` | `text \| null` | Absolute URL of the cover image (Supabase Storage or external) |
-| `author` | `text` | Display name of the author |
-| `author_role` | `text \| null` | Role line shown in the byline (e.g. "Lead engineer") |
-| `writer_profile_id` | `uuid \| null` | FK to `writer_profiles`; when set, the writer's avatar and bio are shown |
-| `category` | `text \| null` | One of: AI, Automation, Web Dev, SEO, Case Studies |
-| `tags` | `text[] \| null` | Reserved; currently always null |
-| `reading_time_minutes` | `int \| null` | Displayed as "X min read" |
-| `published` | `boolean` | `true` = visible on the public site |
-| `featured` | `boolean` | `true` = pinned at top of the blog listing |
-| `meta_title` | `text \| null` | `<title>` tag; falls back to `title` |
-| `meta_description` | `text \| null` | `<meta description>`; falls back to `excerpt` |
-| `views` | `int` | Incremented by the view-tracker on each page load |
-| `created_at` | `timestamptz` | Auto-set on insert; used as the published date shown to readers |
-| `updated_at` | `timestamptz` | Bumped on every `updateBlogPost` call |
+| Field                  | Type             | Purpose                                                                  |
+| ---------------------- | ---------------- | ------------------------------------------------------------------------ |
+| `id`                   | `uuid`           | Primary key, auto-generated                                              |
+| `title`                | `text`           | Post title                                                               |
+| `slug`                 | `text`           | Unique URL segment (`/blog/<slug>`)                                      |
+| `excerpt`              | `text \| null`   | One-two sentence summary shown in listings                               |
+| `content`              | `text`           | Full body HTML (rich text from the editor)                               |
+| `cover_image_url`      | `text \| null`   | Absolute URL of the cover image (Supabase Storage or external)           |
+| `author`               | `text`           | Display name of the author                                               |
+| `author_role`          | `text \| null`   | Role line shown in the byline (e.g. "Lead engineer")                     |
+| `writer_profile_id`    | `uuid \| null`   | FK to `writer_profiles`; when set, the writer's avatar and bio are shown |
+| `category`             | `text \| null`   | One of: AI, Automation, Web Dev, SEO, Case Studies                       |
+| `tags`                 | `text[] \| null` | Reserved; currently always null                                          |
+| `reading_time_minutes` | `int \| null`    | Displayed as "X min read"                                                |
+| `published`            | `boolean`        | `true` = visible on the public site                                      |
+| `featured`             | `boolean`        | `true` = pinned at top of the blog listing                               |
+| `meta_title`           | `text \| null`   | `<title>` tag; falls back to `title`                                     |
+| `meta_description`     | `text \| null`   | `<meta description>`; falls back to `excerpt`                            |
+| `views`                | `int`            | Incremented by the view-tracker on each page load                        |
+| `created_at`           | `timestamptz`    | Auto-set on insert; used as the published date shown to readers          |
+| `updated_at`           | `timestamptz`    | Bumped on every `updateBlogPost` call                                    |
 
 ### `writer_profiles` — reusable author records
 
-| Field | Type | Purpose |
-|---|---|---|
-| `id` | `uuid` | Primary key |
-| `name` | `text` | Display name |
-| `role` | `text \| null` | Role line |
-| `email` | `text \| null` | Internal only |
-| `bio` | `text \| null` | Shown in the author bio block at the bottom of each post |
-| `avatar_url` | `text \| null` | Photo shown in byline and author bio |
-| `twitter_handle` | `text \| null` | Linked from the author bio |
-| `linkedin_url` | `text \| null` | Linked from the author bio |
+| Field            | Type           | Purpose                                                  |
+| ---------------- | -------------- | -------------------------------------------------------- |
+| `id`             | `uuid`         | Primary key                                              |
+| `name`           | `text`         | Display name                                             |
+| `role`           | `text \| null` | Role line                                                |
+| `email`          | `text \| null` | Internal only                                            |
+| `bio`            | `text \| null` | Shown in the author bio block at the bottom of each post |
+| `avatar_url`     | `text \| null` | Photo shown in byline and author bio                     |
+| `twitter_handle` | `text \| null` | Linked from the author bio                               |
+| `linkedin_url`   | `text \| null` | Linked from the author bio                               |
 
 ### `blog_comments` — reader comments with moderation gate
 
-| Field | Type | Purpose |
-|---|---|---|
-| `id` | `uuid` | Primary key |
-| `post_id` | `uuid` | FK to `blog_posts` |
-| `author_name` | `text` | Commenter's name |
-| `author_email` | `text` | Collected but not displayed publicly |
-| `content` | `text` | Comment body |
-| `approved` | `boolean` | Defaults to `false`; only approved comments render publicly |
+| Field          | Type      | Purpose                                                     |
+| -------------- | --------- | ----------------------------------------------------------- |
+| `id`           | `uuid`    | Primary key                                                 |
+| `post_id`      | `uuid`    | FK to `blog_posts`                                          |
+| `author_name`  | `text`    | Commenter's name                                            |
+| `author_email` | `text`    | Collected but not displayed publicly                        |
+| `content`      | `text`    | Comment body                                                |
+| `approved`     | `boolean` | Defaults to `false`; only approved comments render publicly |
 
 ---
 
@@ -82,18 +82,18 @@ The `mapDbPost()` helper in `src/lib/blog-data.ts` converts a raw `DbBlogPost` r
 
 All routes live under `src/app/api/blog/`.
 
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
-| `GET` | `/api/blog` | Public | List all posts |
-| `POST` | `/api/blog` | Session required | Create a post |
-| `GET` | `/api/blog/[slug]` | Public | Fetch a single post |
-| `PUT` | `/api/blog/[slug]` | Session required | Update a post |
-| `DELETE` | `/api/blog/[slug]` | Session required | Delete a post |
-| `GET` | `/api/blog/[slug]/comments` | Public (approved only) / Session (all) | List comments |
-| `POST` | `/api/blog/[slug]/comments` | Public | Submit a comment |
-| `PUT` | `/api/blog/[slug]/comments/[id]` | Session required | Approve or reject a comment |
-| `DELETE` | `/api/blog/[slug]/comments/[id]` | Session required | Delete a comment |
-| `POST` | `/api/blog/[slug]/view` | Public | Increment view counter |
+| Method   | Path                             | Auth                                   | Purpose                     |
+| -------- | -------------------------------- | -------------------------------------- | --------------------------- |
+| `GET`    | `/api/blog`                      | Public                                 | List all posts              |
+| `POST`   | `/api/blog`                      | Session required                       | Create a post               |
+| `GET`    | `/api/blog/[slug]`               | Public                                 | Fetch a single post         |
+| `PUT`    | `/api/blog/[slug]`               | Session required                       | Update a post               |
+| `DELETE` | `/api/blog/[slug]`               | Session required                       | Delete a post               |
+| `GET`    | `/api/blog/[slug]/comments`      | Public (approved only) / Session (all) | List comments               |
+| `POST`   | `/api/blog/[slug]/comments`      | Public                                 | Submit a comment            |
+| `PUT`    | `/api/blog/[slug]/comments/[id]` | Session required                       | Approve or reject a comment |
+| `DELETE` | `/api/blog/[slug]/comments/[id]` | Session required                       | Delete a comment            |
+| `POST`   | `/api/blog/[slug]/view`          | Public                                 | Increment view counter      |
 
 Every route validates its request body as `unknown` before narrowing, wraps all logic in `try/catch`, and returns typed `NextResponse.json` responses.
 
@@ -204,10 +204,10 @@ If the n8n workflow needs to keep a post in draft first and publish later, it in
 
 ## Rendering strategy summary
 
-| Layer | Strategy | Why |
-|---|---|---|
-| `/blog` index | ISR, 60 s revalidate | New posts surface quickly; no SSG rebuild needed |
-| `/blog/[slug]` post | ISR, 60 s revalidate | Same; writer profile joins update without redeploy |
-| Dashboard pages | Dynamic (always server-rendered) | Always shows current state of drafts |
-| Comment list | Dynamic | Must reflect moderation actions instantly |
-| View counter | Client-side fire-and-forget | Does not block page render |
+| Layer               | Strategy                         | Why                                                |
+| ------------------- | -------------------------------- | -------------------------------------------------- |
+| `/blog` index       | ISR, 60 s revalidate             | New posts surface quickly; no SSG rebuild needed   |
+| `/blog/[slug]` post | ISR, 60 s revalidate             | Same; writer profile joins update without redeploy |
+| Dashboard pages     | Dynamic (always server-rendered) | Always shows current state of drafts               |
+| Comment list        | Dynamic                          | Must reflect moderation actions instantly          |
+| View counter        | Client-side fire-and-forget      | Does not block page render                         |

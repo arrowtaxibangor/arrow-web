@@ -39,13 +39,13 @@ Next.js App (arrow.taxi)
 
 ### Cost table
 
-| Layer | Role | Cost |
-|---|---|---|
-| Vercel (ISR) | Serves all page HTML from edge cache | $0 extra |
-| Cloudflare | DNS proxy + image CDN | Free tier |
-| Self-hosted Supabase | All content + image storage | $0 extra (reuses DO droplet disk) |
-| Admin panel | Built into the same Next.js app | $0 extra |
-| LLM (Claude API — direct Anthropic) | Content generation in admin only | Pay per use (pennies per session) |
+| Layer                               | Role                                 | Cost                              |
+| ----------------------------------- | ------------------------------------ | --------------------------------- |
+| Vercel (ISR)                        | Serves all page HTML from edge cache | $0 extra                          |
+| Cloudflare                          | DNS proxy + image CDN                | Free tier                         |
+| Self-hosted Supabase                | All content + image storage          | $0 extra (reuses DO droplet disk) |
+| Admin panel                         | Built into the same Next.js app      | $0 extra                          |
+| LLM (Claude API — direct Anthropic) | Content generation in admin only     | Pay per use (pennies per session) |
 
 ---
 
@@ -159,45 +159,45 @@ All routes live under `src/app/api/`. No external backend is involved for CMS op
 
 ### CMS Pages
 
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
-| `GET` | `/api/cms/pages` | Public | List published pages (nav/footer) |
-| `POST` | `/api/cms/pages` | Admin | Create a new page |
-| `GET` | `/api/cms/pages/[slug]` | Public | Fetch a page + its sections |
-| `PUT` | `/api/cms/pages/[slug]` | Admin | Update page fields |
-| `DELETE` | `/api/cms/pages/[slug]` | Admin | Delete page |
-| `PUT` | `/api/cms/pages/[slug]/sections` | Admin | Replace entire sections array |
-| `POST` | `/api/revalidate` | Secret key | Trigger on-demand ISR revalidation |
+| Method   | Path                             | Auth       | Purpose                            |
+| -------- | -------------------------------- | ---------- | ---------------------------------- |
+| `GET`    | `/api/cms/pages`                 | Public     | List published pages (nav/footer)  |
+| `POST`   | `/api/cms/pages`                 | Admin      | Create a new page                  |
+| `GET`    | `/api/cms/pages/[slug]`          | Public     | Fetch a page + its sections        |
+| `PUT`    | `/api/cms/pages/[slug]`          | Admin      | Update page fields                 |
+| `DELETE` | `/api/cms/pages/[slug]`          | Admin      | Delete page                        |
+| `PUT`    | `/api/cms/pages/[slug]/sections` | Admin      | Replace entire sections array      |
+| `POST`   | `/api/revalidate`                | Secret key | Trigger on-demand ISR revalidation |
 
 ### Blog
 
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
-| `GET` | `/api/blog` | Public | List published posts |
-| `POST` | `/api/blog` | Admin | Create post |
-| `GET` | `/api/blog/[slug]` | Public | Fetch single post + writer |
-| `PUT` | `/api/blog/[slug]` | Admin | Update post |
-| `DELETE` | `/api/blog/[slug]` | Admin | Delete post |
-| `POST` | `/api/blog/[slug]/view` | Public | Increment view counter |
-| `GET` | `/api/blog/[slug]/comments` | Public / Admin | List comments |
-| `POST` | `/api/blog/[slug]/comments` | Public | Submit comment |
-| `PUT` | `/api/blog/[slug]/comments/[id]` | Admin | Approve / reject |
-| `DELETE` | `/api/blog/[slug]/comments/[id]` | Admin | Delete |
+| Method   | Path                             | Auth           | Purpose                    |
+| -------- | -------------------------------- | -------------- | -------------------------- |
+| `GET`    | `/api/blog`                      | Public         | List published posts       |
+| `POST`   | `/api/blog`                      | Admin          | Create post                |
+| `GET`    | `/api/blog/[slug]`               | Public         | Fetch single post + writer |
+| `PUT`    | `/api/blog/[slug]`               | Admin          | Update post                |
+| `DELETE` | `/api/blog/[slug]`               | Admin          | Delete post                |
+| `POST`   | `/api/blog/[slug]/view`          | Public         | Increment view counter     |
+| `GET`    | `/api/blog/[slug]/comments`      | Public / Admin | List comments              |
+| `POST`   | `/api/blog/[slug]/comments`      | Public         | Submit comment             |
+| `PUT`    | `/api/blog/[slug]/comments/[id]` | Admin          | Approve / reject           |
+| `DELETE` | `/api/blog/[slug]/comments/[id]` | Admin          | Delete                     |
 
 ### AI Assist
 
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
+| Method | Path               | Auth  | Purpose                                         |
+| ------ | ------------------ | ----- | ----------------------------------------------- |
 | `POST` | `/api/ai/generate` | Admin | Generate section content from brief (streaming) |
-| `POST` | `/api/ai/improve` | Admin | Rewrite / improve selected text (streaming) |
-| `POST` | `/api/ai/seo` | Admin | Suggest meta title, description, keywords |
+| `POST` | `/api/ai/improve`  | Admin | Rewrite / improve selected text (streaming)     |
+| `POST` | `/api/ai/seo`      | Admin | Suggest meta title, description, keywords       |
 
 ### Media
 
-| Method | Path | Auth | Purpose |
-|---|---|---|---|
-| `POST` | `/api/media/upload` | Admin | Upload image to Supabase Storage, return URL |
-| `DELETE` | `/api/media/[filename]` | Admin | Delete from storage |
+| Method   | Path                    | Auth  | Purpose                                      |
+| -------- | ----------------------- | ----- | -------------------------------------------- |
+| `POST`   | `/api/media/upload`     | Admin | Upload image to Supabase Storage, return URL |
+| `DELETE` | `/api/media/[filename]` | Admin | Delete from storage                          |
 
 ---
 
@@ -206,12 +206,14 @@ All routes live under `src/app/api/`. No external backend is involved for CMS op
 No component or route queries Supabase directly. All queries go through two files.
 
 **`src/lib/supabase/cms.ts`**
+
 - `listPublishedPages()` — for nav / footer
 - `getPageBySlug(slug)` — with sections, ordered by `sort_order`
 - `createPage(data)` / `updatePage(slug, data)` / `deletePage(slug)`
 - `replacePageSections(pageId, sections[])` — atomic replace on save
 
 **`src/lib/supabase/blog.ts`** (same proven design as RevenueLadder)
+
 - `listBlogPosts(opts?)` — published-only for public, all for admin
 - `getBlogPostWithWriter(slug)`
 - `createBlogPost(data)` / `updateBlogPost(slug, data)` / `deleteBlogPost(slug)`
@@ -227,6 +229,7 @@ No component or route queries Supabase directly. All queries go through two file
 Remove all timed revalidation. Switch to on-demand only triggered by admin saves.
 
 **`src/app/api/revalidate/route.ts`**
+
 ```ts
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
@@ -350,6 +353,7 @@ Protected by middleware — any unauthenticated `/admin/*` request redirects to 
 ### CMS Page Editor — Fields
 
 Right sidebar:
+
 - **Title** — page display title
 - **Slug** — URL segment, auto-generated from title, editable
 - **Meta Title** — `<title>` tag override
@@ -365,6 +369,7 @@ Right sidebar:
 ### CMS Page Editor — Sections
 
 Main area:
+
 - Drag-to-reorder sections (saves on drop)
 - **Add Section** button → type picker: TEXT / IMAGE / BUTTON / AD_CODE / HERO
 - Per section inline editor:
@@ -377,6 +382,7 @@ Main area:
 ### Blog Post Editor
 
 Matches RevenueLadder's `BlogPostForm`, adapted for Arrow Taxi categories:
+
 - Title → auto-generates slug until manually edited
 - Live URL preview: `arrow.taxi/blog/<slug>`
 - Rich text editor (Tiptap) for content
@@ -398,6 +404,7 @@ AI assist lives **only in the admin panel**. It never writes directly to publish
 **1. Generate Section Content**
 
 Admin clicks "Generate with AI" on a TEXT section. Side panel asks:
+
 - Topic / brief (e.g. "Why choose Arrow Taxi for airport transfers")
 - Tone: Professional / Friendly / SEO-optimised
 - Length: Short / Medium / Long
@@ -407,6 +414,7 @@ Calls `POST /api/ai/generate`. Streams HTML output into the Tiptap editor. Admin
 **2. Improve Selected Text**
 
 Admin selects text in the rich editor → "Improve with AI" appears. Dropdown:
+
 - Make clearer
 - Make more concise
 - Make more persuasive
@@ -443,6 +451,7 @@ After inserting, n8n adds one final step: `POST /api/revalidate` with `{ slug, t
 > **Service role key security:** The service role key bypasses all RLS and is effectively god-mode on your database. Keep it only in n8n's credential store (never in any client-side code or public repo). Ensure `db.arrow.taxi` is HTTPS-only (it is). Ideally restrict which IPs can reach the Supabase REST endpoint — either via Kong config or by putting the endpoint behind Cloudflare Access. One leak of this key = full database compromise.
 
 Minimal n8n payload:
+
 ```json
 {
   "title": "10 Best Destinations from Bangor by Taxi",
