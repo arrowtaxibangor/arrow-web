@@ -4,173 +4,129 @@ import { Col, Row, Image } from 'antd';
 import Link from 'next/link';
 import NextImage from 'next/image';
 import { socialMediaIcons } from '../../../../utils/socialMediaIcons';
+import { NavItems } from '../../../../utils/NavItems';
 import { usePagesLink } from '../../../../Hooks/PageLinksFetcher';
+import {
+  ADDRESS_LINE,
+  EMAIL,
+  EMAIL_HREF,
+  OPENING_HOURS,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+} from '../../../../utils/contact';
+import { BookingButton } from '../BookingButton/BookingButton';
+
+// 44px min height keeps every footer link a valid touch target on phones.
+const linkClass =
+  'flex items-center min-h-[44px] hover:underline font-[400] text-[16px] leading-[22px]';
 
 export const FooterComponent = () => {
   const { data, isLoading } = usePagesLink();
 
-  const dynamicPages = data?.pages?.filter((page: any) => page.isPublished) || [];
+  // One link list only. Previously a hardcoded column and a dynamic CMS column
+  // rendered overlapping sets (Airport Transfers, Caernarfon, Snowdonia and
+  // Contact all appeared twice) and a third row repeated Home/Contact again.
+  const staticHrefs = new Set(NavItems.map((item) => item.href));
+  const extraPages: any[] =
+    (!isLoading &&
+      data?.pages
+        ?.filter((page: any) => page.isPublished)
+        ?.filter((page: any) => !staticHrefs.has(`/${page.slug}`))) ||
+    [];
 
   return (
     <footer className="w-full flex flex-col !gap-0">
       <div className="relative w-full h-[102px] translate-y-[2px]">
         <NextImage
           src="/Assets/Images/FooterWave.svg"
-          alt="Footer Wave"
+          alt=""
+          aria-hidden="true"
           fill
+          sizes="100vw"
           className="object-cover"
         />
       </div>
 
-      <Row className="bg-primary_color text-white p-[72px] tabletlg:p-[40px] h-full space-y-[30px] mobile:space-y-[20px]">
-        {/* Left Column: Logo, Description, Social Icons */}
-        <Col className="flex flex-col gap-[24px]" xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
+      <Row className="bg-primary_color text-white p-[72px] tabletlg:p-[40px] mobile:p-[24px] h-full gap-y-[30px]">
+        {/* Brand + booking CTA */}
+        <Col className="flex flex-col gap-[20px]" xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
           <Image
             src="/Assets/Images/logoFooter.svg"
-            alt="logo"
+            alt="Arrow Taxi Bangor"
             preview={false}
             width={200}
             height={66}
           />
-          <p className="leading-[28px] text-[14px] font-[400]">
-            Book a taxi online or give us a call <br /> on 01248209393. We offer cheap airport runs,
-            <br /> Snowdonia taxi services, tours, and photo tours.
+          <p className="leading-[28px] text-[14px] font-[400] max-w-[340px]">
+            Book a taxi online or give us a call on {PHONE_DISPLAY}. We offer cheap airport runs,
+            Snowdonia taxi services, tours, and photo tours.
           </p>
-          <div className="flex gap-[35px] items-center flex-wrap">
+          <div className="w-full max-w-[280px]">
+            <BookingButton />
+          </div>
+          <div className="flex gap-[8px] items-center flex-wrap">
             {socialMediaIcons?.map((item) => (
-              <Link href={item?.href} target="_blank" key={item?.href}>
-                <Image src={item?.icon} width={30} height={30} alt="icon" preview={false} />
+              <Link
+                href={item?.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                key={item?.href}
+                aria-label={`Arrow Taxi on ${item.label}`}
+                className="flex items-center justify-center w-[44px] h-[44px] rounded-full transition-colors hover:bg-white/10"
+              >
+                <Image src={item?.icon} width={24} height={24} alt="" preview={false} />
               </Link>
             ))}
           </div>
         </Col>
 
-        {/* Middle Columns: Static Menus */}
-        <Col
-          className="flex flex-col gap-[40px] mobile:gap-[20px]"
-          xxl={4}
-          xl={4}
-          lg={4}
-          md={24}
-          sm={24}
-          xs={24}
-        >
-          <Link href="/" className="block hover:underline font-[400] text-[16px] leading-[22px]">
-            Home
-          </Link>
-          <Link
-            href="/contact"
-            className="block hover:underline font-[400] text-[16px] leading-[22px]"
-          >
-            Contact
-          </Link>
-          <Link
-            href="/caernarfon-taxi"
-            className="block hover:underline font-[400] text-[16px] leading-[22px]"
-          >
-            Caernarfon Taxi
-          </Link>
-          <Link
-            href="/snowdon-taxi"
-            className="block hover:underline font-[400] text-[16px] leading-[22px]"
-          >
-            Snowdonia Taxi
-          </Link>
-          <Link
-            href="/airport-transfers"
-            className="block hover:underline font-[400] text-[16px] leading-[22px]"
-          >
-            Airport Transfers
-          </Link>
-          <Link
-            href="/blog"
-            className="block hover:underline font-[400] text-[16px] leading-[22px]"
-          >
-            Blog
-          </Link>
+        {/* Pages */}
+        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={24} sm={24} xs={24}>
+          <h2 className="text-[16px] font-[600] pb-[6px]">Pages</h2>
+          {NavItems.map((item) => (
+            <Link key={item.href} href={item.href} className={linkClass}>
+              {item.label}
+            </Link>
+          ))}
+          {extraPages.map((page: any) => (
+            <Link key={page.id} href={`/${page.slug}`} className={linkClass}>
+              {page.title}
+            </Link>
+          ))}
         </Col>
 
-        <Col
-          className="flex flex-col gap-[40px] mobile:gap-[20px]"
-          xxl={6}
-          xl={6}
-          lg={6}
-          md={24}
-          sm={24}
-          xs={24}
-        >
-          {/* Dynamic Pages from API */}
-          {!isLoading &&
-            dynamicPages.map((page: any) => (
-              <Link
-                key={page.id}
-                href={`/${page.slug}`}
-                className="block hover:underline font-[400] text-[16px] leading-[22px]"
-              >
-                {page.title}
-              </Link>
-            ))}
-        </Col>
-
-        {/* Right Column: Contact Info */}
-        <Col
-          className="flex flex-col gap-[10px] tabletlg:gap-[40px] mobile:gap-[15px]"
-          xxl={4}
-          xl={4}
-          lg={4}
-          md={24}
-          sm={24}
-          xs={24}
-        >
-          <span className="font-[400] text-[16px] leading-[22px]">Call us</span>
+        {/* Contact */}
+        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={24} sm={24} xs={24}>
+          <h2 className="text-[16px] font-[600] pb-[6px]">Contact</h2>
           <Link
-            href="tel:+441248209393"
-            className="block text-white hover:underline font-[400] text-[16px] leading-[22px]"
+            href={PHONE_HREF}
+            aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
+            className={linkClass}
           >
-            01248209393
+            {PHONE_DISPLAY}
           </Link>
+          <a href={EMAIL_HREF} className={linkClass}>
+            {EMAIL}
+          </a>
+          <p className="text-[16px] leading-[22px] font-[400] pt-[10px]">{ADDRESS_LINE}</p>
+          <p className="text-[16px] leading-[22px] font-[400] pt-[10px]">{OPENING_HOURS}</p>
         </Col>
 
-        {/* Bottom Row: Repeated Links & Company Info */}
+        {/* Legal */}
         <Col
-          className="flex justify-between items-center tabletlg:flex-col tabletlg:gap-[40px]"
           xxl={24}
           xl={24}
           lg={24}
           md={24}
           sm={24}
           xs={24}
+          className="border-t border-white/20 pt-[24px] mt-[10px]"
         >
-          <div className="flex w-full gap-[40px] flex-wrap">
-            <Link href="/" className="block hover:underline font-[400] text-[16px] leading-[22px]">
-              Home
-            </Link>
-            <Link
-              href="/contact"
-              className="block hover:underline font-[400] text-[16px] leading-[22px]"
-            >
-              Contact
-            </Link>
-            {/* {!isLoading &&
-              dynamicPages.map((page: any) => (
-                <Link
-                  key={`bottom-${page.id}`}
-                  href={`/${page.slug}`}
-                  className="block hover:underline font-[400] text-[16px] leading-[22px]"
-                >
-                  {page.title}
-                </Link>
-              ))} */}
-          </div>
-          <div className="w-full text-start font-[400] text-[16px] tabletlg:max-w-full max-w-[300px] leading-[22px]">
-            Arrow Taxi Bangor Ltd. is a registered business in Wales company number 17006952.
-          </div>
+          <p className="text-[14px] leading-[22px] font-[400]">
+            Arrow Taxi Bangor Ltd. is a registered business in Wales, company number 17006952.
+          </p>
         </Col>
       </Row>
-      {/* Bottom Footer */}
-      {/* <div className="mt-10 text-center text-xs text-white">
-        © 2025, All Rights Reserved
-      </div> */}
     </footer>
   );
 };

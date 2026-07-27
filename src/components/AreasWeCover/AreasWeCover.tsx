@@ -20,7 +20,7 @@ const AreasWeCover = () => {
         </p>
       </div>
       <div className="text-[16px] leading-[42px] mobilelg:leading-[32px] font-light pt-5 px-6 mobilelg:px-2 pb-0 w-full max-w-[1200px] mx-auto">
-        <h2 className="text-[32px] mobilelg:text-[24px] font-semibold text-[#45A69D] w-full text-start pb-5 mobilelg:pb-2">
+        <h2 className="text-[32px] mobilelg:text-[24px] font-semibold text-primary_color w-full text-start pb-5 mobilelg:pb-2">
           Popular Areas We Cover:
         </h2>
         <Row gutter={[12, 0]} className="w-full">
@@ -29,7 +29,6 @@ const AreasWeCover = () => {
               <li>Gwynedd</li>
               <li>Bangor Train Station</li>
               <li>Caernarfon</li>
-              <li>Snowdonia National Park</li>
             </ul>
           </Col>
           <Col
@@ -41,9 +40,9 @@ const AreasWeCover = () => {
             className={`w-full flex ${screens.md ? 'justify-center' : 'justify-start'}`}
           >
             <ul className="list-disc pl-6 !font-normal !text-[20px] !leading-[36px] !text-[#625B71]">
+              <li>Snowdonia National Park</li>
               <li>Beddgelert</li>
-              <li>Southstack</li>
-              <li>Penmon Lighthouse</li>
+              <li>South Stack, Anglesey</li>
             </ul>
           </Col>
           <Col
@@ -55,9 +54,9 @@ const AreasWeCover = () => {
             className={`w-full flex ${screens.md ? 'justify-end' : 'justify-start'}`}
           >
             <ul className="list-disc pl-6 !font-normal !text-[20px] !leading-[36px] !text-[#625B71]">
+              <li>Penmon Lighthouse, Anglesey</li>
               <li>Porthmadog</li>
               <li>Pwllheli</li>
-              <li>Beddgelert</li>
             </ul>
           </Col>
         </Row>

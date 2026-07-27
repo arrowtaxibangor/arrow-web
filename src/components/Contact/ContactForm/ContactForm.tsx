@@ -28,9 +28,12 @@ export default function ContactForm() {
   return (
     <div className="bg-[#F7F7F8] mobilelg:p-[35px] p-[65px] tabletlg:rounded-[30px] rounded-l-[30px] rounded-r-[0] gap-[19px] h-full flex flex-col justify-center">
       <div className="w-full flex flex-col gap-[10px]">
-        <h1 className="text-[35px] font-[700] text-[#333C33] leading-[90%]">Contact us</h1>
+        {/* h2, not h1 — the Banner above already provides this page's single h1. */}
+        <h2 className="text-[35px] mobile:text-[28px] font-[700] text-[#333C33] leading-[90%]">
+          Contact us
+        </h2>
         <p className="text-[16px] leading-[25px] text-[#000] font-[300]">
-          Welcome to Discuss your plans with the driver and they can then give you our best quote.
+          Tell us about your journey and we&apos;ll come back to you with our best quote.
         </p>
       </div>
       <Spin spinning={isLoading} size="large">
@@ -93,7 +96,7 @@ export default function ContactForm() {
               type="primary"
               htmlType="submit"
               loading={isLoading}
-              className="bg-primary_color border-none text-white w-[109px] h-[37px] rounded-[8px] text-[20px] font-[500] leading-[20px]"
+              className="bg-primary_color border-none text-white w-full sm:w-auto sm:min-w-[140px] !h-auto !min-h-[48px] rounded-[8px] text-[18px] font-[500]"
             >
               Submit
             </Button>

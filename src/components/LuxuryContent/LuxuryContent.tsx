@@ -17,9 +17,10 @@ function LuxuryContent() {
 
   return (
     <div className="w-full">
-      <h1 className="text-primary_color text-[32px] mobilelg:text-[24px] tablet:text-[28px] leading-[61px] mobilelg:leading-[40px] tablet:leading-[50px] font-semibold">
+      {/* h2, not h1 — the Banner above already provides this page's single h1. */}
+      <h2 className="text-primary_color text-[32px] mobilelg:text-[24px] tablet:text-[28px] leading-[61px] mobilelg:leading-[40px] tablet:leading-[50px] font-semibold">
         North Wales Luxury Chauffeur Service
-      </h1>
+      </h2>
       {/* Fancy Image Slider */}
       <div className="mt-10 w-full max-w-5xl mx-auto">
         <Swiper
@@ -62,9 +63,9 @@ function LuxuryContent() {
         <b className="!font-semibold">Bangor and all of North Wales.</b>
       </p>
 
-      <h1 className="text-[22px] leading-[42px] tabletlg:!leading-[35px] font-normal">
+      <h3 className="text-[22px] leading-[42px] tabletlg:!leading-[35px] font-normal">
         Why Travel With Us?
-      </h1>
+      </h3>
       <ul className="text-[16px] tablet:text-[14px] leading-[42px] mobilelg:leading-[32px] tablet:leading-[38px] !font-light list-disc pl-5">
         <li>
           <b className="!font-semibold">Luxury Vehicle</b> – Glide through every journey in our
@@ -93,9 +94,9 @@ function LuxuryContent() {
         </li>
       </ul>
 
-      <h1 className="text-[22px] leading-[42px] tabletlg:!leading-[35px] font-normal pt-3">
+      <h3 className="text-[22px] leading-[42px] tabletlg:!leading-[35px] font-normal pt-3">
         Perfect For:
-      </h1>
+      </h3>
       <ul className="text-[16px] tablet:text-[14px] leading-[42px] mobilelg:leading-[32px] tablet:leading-[38px] !font-light list-disc pl-5">
         <li>Corporate & executive travel</li>
         <li>Luxury airport transfers</li>

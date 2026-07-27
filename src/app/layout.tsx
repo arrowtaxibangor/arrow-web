@@ -8,6 +8,7 @@ import { ConfigProvider, Spin } from 'antd';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Banner } from '@/components/Shared/Banner/Banner';
+import { MobileCtaBar } from '@/components/Shared/MobileCtaBar/MobileCtaBar';
 import Script from 'next/script';
 
 export default function RootLayout({
@@ -89,6 +90,7 @@ export default function RootLayout({
                   <Footer className="w-full bg-[#fff] h-auto !p-0 mt-10 mobilelg:mt-6">
                     <FooterComponent />
                   </Footer>
+                  <MobileCtaBar />
                 </>
               ) : (
                 <div className="h-screen w-full flex items-center justify-center">

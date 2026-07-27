@@ -1,7 +1,7 @@
 import AreasWeCover from '@/components/AreasWeCover/AreasWeCover';
 import PaymentMethods from '@/components/Shared/PaymentMethods/PaymentMethods';
+import { BookingButton } from '@/components/Shared/BookingButton/BookingButton';
 import { Metadata } from 'next';
-import Link from 'next/link';
 import React from 'react';
 
 export const metadata: Metadata = {
@@ -29,12 +29,11 @@ export default async function Home() {
       'https://www.facebook.com/ArrowBangorTaxi',
       'https://www.instagram.com/ArrowTaxiBangor',
     ],
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: 5,
-      reviewCount: 1,
-      bestRating: 5,
-    },
+    // No aggregateRating here on purpose. It previously hardcoded a 5.0 from a
+    // single review while the real Google rating is 4.9 from many — publishing
+    // invented review markup breaches Google's structured data policy and risks
+    // a manual action. To restore it, feed real values through
+    // utils/getGoogleRatingServer.ts rather than literals.
     additionalType: 'TaxiService', // Optional: still specify your business type
   };
   return (
@@ -43,30 +42,30 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <div className="flex items-center justify-center py-20 mobile:py-14 h-[60vh] w-full">
+      {/* `relative` keeps the wave background anchored to this section — without
+          it the absolute child resolved against an ancestor further up the tree. */}
+      {/* -mx cancels the layout wrapper's px-16 / mobile:px-6 so the wave stays
+          full-bleed, while `relative` keeps the absolute background anchored
+          here rather than to an ancestor further up the tree. */}
+      <div className="relative -mx-16 mobile:-mx-6 flex items-center justify-center py-20 mobile:py-14 min-h-[60vh] w-auto">
         <div
-          className="absolute top-0 left-0 w-full bg-center bg-no-repeat"
+          className="absolute inset-0 h-full w-full bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('/Assets/Images/homeBgWave.png')",
-            height: '60vh',
             backgroundSize: '100% 100%',
           }}
         />
-        <div className="relative z-10 flex flex-col items-center gap-6">
-          <h1 className="text-[42px] mobile:text-[28px] font-bold text-white text-center leading-tight drop-shadow-md">
+        <div className="relative z-10 flex w-full flex-col items-center gap-6 px-4">
+          {/* h2, not h1 — the Banner above already provides this page's single h1. */}
+          <h2 className="text-[42px] mobile:text-[28px] font-bold text-white text-center leading-tight drop-shadow-md">
             Bangor&apos;s Trusted Taxi Service
-          </h1>
+          </h2>
           <p className="text-white text-[18px] mobile:text-[15px] text-center max-w-[500px] drop-shadow">
             Professional, reliable rides across North Wales — available 24/7.
           </p>
-          <Link
-            href="https://PLACEHOLDER_ICABBY_BOOKING_URL"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 px-10 py-4 bg-[#FEC601] hover:bg-yellow-400 text-black font-bold text-[20px] mobile:text-[16px] rounded-full shadow-lg transition-colors"
-          >
-            Book Me
-          </Link>
+          <div className="w-full max-w-[320px] sm:max-w-none flex justify-center">
+            <BookingButton />
+          </div>
         </div>
       </div>
       <PaymentMethods />

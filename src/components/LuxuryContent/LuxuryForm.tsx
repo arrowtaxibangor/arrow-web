@@ -1,8 +1,8 @@
 'use client';
 import { Col, Grid, Row } from 'antd';
-import Link from 'next/link';
 import React from 'react';
 import LuxuryContent from './LuxuryContent';
+import { BookingButton } from '../Shared/BookingButton/BookingButton';
 
 const { useBreakpoint } = Grid;
 
@@ -22,14 +22,7 @@ const LuxuryForm = () => {
         xxl={10}
         className="flex justify-center items-center"
       >
-        <Link
-          href="https://PLACEHOLDER_ICABBY_BOOKING_URL"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-10 py-4 bg-[#FEC601] hover:bg-yellow-400 text-black font-bold text-[20px] rounded-full shadow-lg transition-colors"
-        >
-          Book Me
-        </Link>
+        <BookingButton />
       </Col>
     </Row>
   );

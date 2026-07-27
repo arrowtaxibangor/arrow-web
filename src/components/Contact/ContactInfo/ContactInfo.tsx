@@ -1,5 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
+import {
+  ADDRESS_LINE,
+  EMAIL,
+  EMAIL_HREF,
+  OPENING_HOURS,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+} from '../../../../utils/contact';
 
 export default function ContactInfo() {
   return (
@@ -25,25 +33,46 @@ export default function ContactInfo() {
       {/* Info */}
       <div className="text-white flex flex-col justify-center gap-[20px]">
         <p className="text-[16px] leading-[29px] font-[400]">
-          Book a taxi online or give us a call on 01248209393. We offer cheap airport runs, Snowdon
-          taxi services, tours, and photo tours.
+          Book a taxi online or give us a call on {PHONE_DISPLAY}. We offer cheap airport runs,
+          Snowdonia taxi services, tours, and photo tours.
         </p>
 
         <div className="space-y-[15px] text-sm pb-[20px]">
           <div className="flex items-center gap-4">
-            <Image width={20} height={24} alt="location" src={'/Assets/Icons/location.svg'} />
-            <span className="text-[16px] leading-[100%] font-normal">
-              Arrow Taxi Bangor Station Road, Bangor LL57 1LZ
-            </span>
+            <Image
+              width={20}
+              height={24}
+              alt=""
+              aria-hidden="true"
+              src={'/Assets/Icons/location.svg'}
+            />
+            <span className="text-[16px] leading-[140%] font-normal">{ADDRESS_LINE}</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Image width={22} height={22} alt="phone" src={'/Assets/Icons/phoneIcon.svg'} />
-            <span className="text-[16px] leading-[100%] font-normal">01248209393</span>
-          </div>
-          {/* <div className="flex items-center gap-4">
-            <Image width={22} height={17} alt="email" src={'/Assets/Icons/email.svg'} />
-            <span className="text-[16px] leading-[100%] font-normal">bookings@arrow.taxi</span>
-          </div> */}
+          <a
+            href={PHONE_HREF}
+            aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
+            className="flex items-center gap-4 min-h-[44px] hover:underline"
+          >
+            <Image
+              width={22}
+              height={22}
+              alt=""
+              aria-hidden="true"
+              src={'/Assets/Icons/phoneIcon.svg'}
+            />
+            <span className="text-[16px] leading-[100%] font-normal">{PHONE_DISPLAY}</span>
+          </a>
+          <a href={EMAIL_HREF} className="flex items-center gap-4 min-h-[44px] hover:underline">
+            <Image
+              width={22}
+              height={17}
+              alt=""
+              aria-hidden="true"
+              src={'/Assets/Icons/email.svg'}
+            />
+            <span className="text-[16px] leading-[100%] font-normal">{EMAIL}</span>
+          </a>
+          <p className="text-[16px] leading-[140%] font-normal pt-[10px]">{OPENING_HOURS}</p>
         </div>
       </div>
     </div>

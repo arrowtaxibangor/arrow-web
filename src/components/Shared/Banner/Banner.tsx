@@ -2,25 +2,28 @@
 'use client';
 
 import React from 'react';
-import { message, Rate } from 'antd';
-import { socialMediaIcons } from '../../../../utils/socialMediaIcons';
-import Link from 'next/link';
+import { Rate } from 'antd';
 import { useQuery } from 'react-query';
 import { getGoogleRating } from '../../../../services/googleRating';
 import { usePathname } from 'next/navigation';
 import { usePageBySlug } from '../../../../Hooks/FetchPageBySlug';
 import Image from 'next/image';
+import { BookingButton } from '../BookingButton/BookingButton';
+import { PHONE_DISPLAY } from '../../../../utils/contact';
 
 export const Banner = () => {
   const pathName = usePathname();
 
-  const { data, isLoading } = useQuery(['google-rating'], getGoogleRating, {
-    onError: (err: any) => {
-      message.error(err?.response?.data?.message);
-    },
+  // NOTE: every hook must run before the /blog early return below. Guarding
+  // above these calls changed the hook count between blog and non-blog routes
+  // and crashed React on client-side navigation.
+  const { data, isLoading, isError } = useQuery(['google-rating'], getGoogleRating, {
+    retry: false,
   });
 
   const { data: DynamicData } = usePageBySlug();
+
+  if (pathName?.startsWith('/blog')) return null;
 
   const buildImageUrl = (urlPath: string) =>
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/${urlPath.replace(/\\/g, '/')}`;
@@ -30,46 +33,43 @@ export const Banner = () => {
       case '/':
         return {
           heading: 'Arrow Taxi Bangor',
-          paragraph:
-            'Book your ride online or call us on 01248 20 93 93. Based in Bangor we provide taxi services in Gwynedd covering all popular areas like Bethesda, Caernarfon, Y Felinheli and surrounding areas.',
+          paragraph: `Taxis across Bangor, Caernarfon and Gwynedd — 24/7. Book online or call ${PHONE_DISPLAY}.`,
         };
       case '/caernarfon-taxi':
         return {
           heading: 'Caernarfon Taxi Service',
-          paragraph:
-            'Your local taxi service in Caernarfon and surrounding areas, book online or call us on 01248 209393',
+          paragraph: `Your local taxi service in Caernarfon and surrounding areas. Book online or call ${PHONE_DISPLAY}.`,
         };
       case '/snowdon-taxi':
         return {
           heading: 'Snowdonia Taxi Service',
           paragraph:
-            'Taxi to all destinations like Aber Falls, Llanberis, Betws-y-Coed, Beddgelert, Porthmadog, Pwllheli, Barmouth and more',
+            'Taxi to all destinations like Aber Falls, Llanberis, Betws-y-Coed, Beddgelert, Porthmadog, Pwllheli, Barmouth and more.',
         };
       case '/luxury':
         return {
           heading: 'North Wales Luxury Chauffeur',
-          paragraph:
-            'Have an event? Or just want a luxury travel experience? Call us on 01248209393',
+          paragraph: `Have an event? Or just want a luxury travel experience? Call us on ${PHONE_DISPLAY}.`,
         };
       case '/airport-transfers':
         return {
           heading: 'Airport Transfers',
-          paragraph: '24/7 transfers to and from all major UK airports, call us on 01248 209393',
+          paragraph: `24/7 transfers to and from all major UK airports. Call us on ${PHONE_DISPLAY}.`,
         };
       case '/top-destinations':
         return {
           heading: 'Explore Top Destinations',
-          paragraph: 'Book your taxi online or call us on 01248 20 93 93.',
+          paragraph: `Book your taxi online or call us on ${PHONE_DISPLAY}.`,
         };
       case '/contact':
         return {
-          heading: 'Arrow Taxi Bangor',
-          paragraph: 'Call us now on 01248 20 93 93 or book online!',
+          heading: 'Contact Arrow Taxi Bangor',
+          paragraph: `Call us now on ${PHONE_DISPLAY} or book online.`,
         };
       default:
         return {
           heading: 'Arrow Taxi Bangor',
-          paragraph: 'Call us now on 01248 20 93 93 or book online!',
+          paragraph: `Call us now on ${PHONE_DISPLAY} or book online.`,
         };
     }
   };
@@ -80,60 +80,48 @@ export const Banner = () => {
     ? encodeURI(buildImageUrl(DynamicData.page.HeroBg.url))
     : '/Assets/Images/BannerImg.jpeg';
 
-  console.log('image', backgroundImageUrl);
+  // Only render the rating once a real value has loaded. Never substitute a
+  // placeholder score — an invented rating is a misleading advertising claim.
+  const rating = typeof data?.rating === 'number' ? data.rating : null;
+  const showRating = !isLoading && !isError && rating !== null;
 
   return (
-    <div className="relative w-full h-[70vh]">
-      <Image src={backgroundImageUrl} alt="hero" fill priority className="object-cover" />
-      <div className="absolute inset-0 bg-black opacity-50"></div>
+    <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
+      <Image
+        src={backgroundImageUrl}
+        alt="Arrow Taxi car on the road in Bangor, North Wales"
+        fill
+        priority
+        sizes="(max-width: 1440px) 100vw, 1440px"
+        className="object-cover"
+      />
+      <div className="absolute inset-0 bg-black opacity-50" />
 
-      <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center px-4 gap-y-[18px]">
-        <h1 className="text-[60px] mobile:text-[35px] font-[700] mobile:!leading-[100%] !leading-[90%] text-shadow-lg">
+      <div className="relative z-10 flex w-full flex-col items-center gap-y-5 px-4 py-16 text-center text-white">
+        <h1 className="text-[60px] mobile:text-[32px] font-[700] mobile:!leading-[110%] !leading-[90%] text-shadow-lg">
           {DynamicData?.page?.heroHeading || text.heading}
         </h1>
 
-        <p className="text-[22px] mobile:text-[15px] w-full max-w-[1100px] !leading-[140%] !font-medium">
+        <p className="text-[22px] mobile:text-[16px] w-full max-w-[760px] !leading-[145%] !font-medium">
           {DynamicData?.page?.heroSubheading || text.paragraph}
         </p>
 
-        <div className="flex flex-wrap mobile:gap-x-[20px] gap-x-[35px] gap-y-4 justify-center items-center">
-          {socialMediaIcons?.map((item) => {
-            const isValidLink = item?.href && item?.href !== '#';
-
-            const IconContent = (
-              <div className="mobile:w-[30px] mobile:h-[30px] w-[50px] h-[50px] cursor-pointer relative">
-                <Image
-                  src={item?.icon}
-                  alt="icon"
-                  fill
-                  sizes="(max-width: 768px) 30px, 50px"
-                  className="object-contain"
-                />
-              </div>
-            );
-
-            return isValidLink ? (
-              <Link href={item.href} target="_blank" key={item.icon}>
-                {IconContent}
-              </Link>
-            ) : (
-              <div key={item.icon}>{IconContent}</div>
-            );
-          })}
+        <div className="w-full max-w-[320px] sm:max-w-none pt-1">
+          <BookingButton />
         </div>
 
-        <div className="flex items-center">
-          <div className="text-[20px] mobile:text-[18px] !font-[700] !leading-[100%] text-white space-x-2">
-            Google Rating: {isLoading ? '5' : data?.rating}
+        {showRating && (
+          <div className="flex items-center gap-x-2 text-[18px] mobile:text-[16px] !font-[700] !leading-[100%] text-white">
+            <span>Google Rating: {rating}</span>
             <Rate
               allowHalf
               disabled
-              value={data?.rating || 5}
-              className="text-[20px] mobile:text-[18px] bannerRating"
+              value={rating}
+              className="text-[18px] mobile:text-[16px] bannerRating"
             />
           </div>
-        </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };

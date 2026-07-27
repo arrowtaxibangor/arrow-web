@@ -1,91 +1,129 @@
-# CLAUDE.md
+# Arrow Taxi — Claude Code Context
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project
 
-## Commands
+Arrow Taxi is a taxi and private-hire booking platform serving Bangor and North Wales. The codebase
+is a single Next.js 14 App Router app that serves two distinct surfaces: the public booking site
+(`arrow.taxi`) and a headless CMS admin (`cms.arrow.taxi`) for managing pages, blog posts, and
+site settings.
 
-```bash
-npm run dev          # Start development server
-npm run build        # Format with Prettier, then build for production
-npm run start        # Start production server
-npm run lint         # Run ESLint
-npm run format       # Run Prettier formatter only
+## Tech stack
+
+- **Framework:** Next.js 14 App Router, TypeScript
+- **Database:** Supabase (PostgreSQL) via `@supabase/supabase-js`
+- **Auth:** iron-session v8 (cookie-based, server-only, `arrow-cms-session` cookie)
+- **CSS:** Tailwind CSS (custom breakpoints, all `max-width`) + Ant Design 5 (public site) + shadcn/ui Radix components (admin only)
+- **Image storage:** Cloudinary (signed server-side upload) served via Cloudflare proxy at `images.arrow.taxi`
+- **AI:** Vercel AI SDK (`ai`) + `@ai-sdk/anthropic`, model `claude-sonnet-4-6`
+- **Client state:** Zustand v5 (`store/useStore.ts`), React Query v3
+- **Package manager:** npm
+
+## Folder structure (non-obvious parts)
+
+```
+src/
+  app/
+    api/
+      admin/     # Protected CMS API (login, logout, upload, settings, writers)
+      blog/      # Public blog + admin blog CRUD
+      ai/        # AI text generation endpoints (generate, improve, seo)
+      cms/       # CMS pages CRUD
+    admin/       # Admin dashboard UI pages (served only on cms.arrow.taxi)
+  lib/
+    supabase/
+      client.ts  # supabase (anon) + supabaseAdmin (service role — server only)
+      cms.ts     # All cms_pages / cms_sections / site_settings query functions
+      blog.ts    # All blog_posts / blog_comments / writer_profiles query functions
+    auth/
+      session.ts # iron-session config and SessionData type
+    cloudinary.ts # Upload / delete / proxy URL helpers
+  components/
+    admin/       # Admin-only UI components
+    ui/          # shadcn/ui primitives (Button, Input, etc.) — used in admin
+    Shared/      # Public site shared components (Header, Footer)
+services/        # Axios-based services for the external backend API (bookings, vehicles, fares)
+Hooks/           # Custom React hooks (useFareData, useLocationSet, etc.)
+store/           # Zustand stores (useBookingStore, useGoogleMapsStore)
+utils/           # Axios client, fare calculation, nav items
+types/           # Global TypeScript types
+migrations/      # SQL migration files (run manually via Supabase dashboard)
 ```
 
-There is no test suite configured in this project.
+## Two separate API concerns
 
-## Environment Variables
+**CMS/blog data** — Supabase, server-side only:
+- Always call functions from `src/lib/supabase/cms.ts` or `src/lib/supabase/blog.ts`
+- Never write raw Supabase queries inline in route handlers
 
-Required variables (create a `.env.local` file):
+**Booking/vehicles/fares** — external backend at `NEXT_PUBLIC_BACKEND_URL`:
+- Always go through `services/` files that import `utils/axios.ts`
+- Axios client auto-attaches `auth-token` from `localStorage['arrow-taxi']`
 
-- `NEXT_PUBLIC_BACKEND_URL` — Base URL for the backend API (e.g., `https://api-arrowtaxi.binarymarvels.com`)
-- `NEXT_PUBLIC_MAP_API_KEY` — Google Maps JavaScript API key (needs Places, Geometry, and Directions libraries)
+## Auth flow (admin)
 
-The axios client (`utils/axios.ts`) reads `NEXT_PUBLIC_BACKEND_URL` and attaches an `auth-token` header from `localStorage['arrow-taxi']` on every request.
+1. User visits any `/admin/*` path
+2. `middleware.ts` reads the `arrow-cms-session` cookie and unseals it via iron-session
+3. If missing or invalid → redirect to `/admin/login`
+4. On login (`POST /api/admin/login`) → `getIronSession()` sets `isLoggedIn: true` on the cookie
+5. Every protected API route calls `requireAdmin()` as its first line — reads the session server-side and throws `'Unauthorized'` if not logged in
+6. On the main domain `arrow.taxi`, all `/admin/*` paths return 404
 
-## Architecture Overview
+## Brand / design
 
-**Next.js 14 App Router** with all pages under `src/app/`. The root layout (`src/app/layout.tsx`) is a `'use client'` component that wraps everything in Ant Design's `ConfigProvider` and a `QueryProvider` (React Query v3). It defers rendering until CSS is loaded (checks `document.styleSheets`).
+- Primary blue: `primary_color` in Tailwind (`#265EA6`) — use the Tailwind class, not the hex value inline
+- Accent yellow: `#FEC601` — used for fare reasoning text; no Tailwind alias, use inline where needed
+- Admin font: `Roboto, Arial, sans-serif` (set on the admin root div)
+- Custom Tailwind breakpoints are all `max-width` (mobile-first inverted): `mobile` 575px, `mobilelg` 650px, `tablet` 768px, `tabletlg` 992px, `desktop` 1200px
+- shadcn/ui components (Button, Input, etc.) are used in the admin only — the public site uses Ant Design 5
 
-### State Management
+## Tooling quirks
 
-Two Zustand stores in `store/useStore.ts`:
+- `npm run build` runs Prettier before Next.js build — format is enforced at build time
+- There is no test suite — do not add test files or test tooling unless explicitly asked
+- `utils/calculateFare.ts` is entirely commented-out legacy code — do not read, modify, or revive it; active fare logic is `utils/useCalculateMultiVehicleFare.ts`
+- `next.config.mjs` does not allowlist `images.arrow.taxi` for `<Image>` — use a plain `<img>` tag for Cloudinary-uploaded assets (the admin `ImageField` component already does this)
+- Timestamps sent to the external backend must be formatted in `Europe/London` timezone using `moment-timezone`
 
-- `useBookingStore` — holds computed `distance` / `returnDistance` (in miles) and `fare`; written by `BookingForm` after Google Maps DirectionsService resolves, read by fare calculation hooks
-- `useGoogleMapsStore` — tracks whether the Google Maps JS API has loaded (`isLoaded`)
+## Key rules
 
-### Fare Calculation Pipeline
+- **Never import `supabaseAdmin` in a client component or any file that could be bundled client-side.** It uses the Supabase service-role key. Server components and API routes only.
+- **Every protected admin API route must call `requireAdmin()` as its first statement** before reading the request body or touching the database.
+- **All CMS and blog database access goes through `src/lib/supabase/cms.ts` or `src/lib/supabase/blog.ts`.** Do not write inline Supabase queries in route files.
+- **Named exports only.** `export default` is reserved for Next.js page/layout/error files.
+- **No `any` types.** Use `unknown` and narrow with a type guard, or define a proper interface.
+- **No `console.log` in committed code** except inside `catch` blocks in API routes (where `console.error` is acceptable).
+- **Image uploads must go through `POST /api/admin/upload`.** The response `url` is always an `images.arrow.taxi` proxy URL — store and display that, never the raw Cloudinary URL.
+- **`'use client'`** is required on any component that uses React hooks, browser APIs, or event handlers.
+- **AI streaming routes** must use `streamText` from `ai` and return `result.toTextStreamResponse()` — do not buffer and return JSON.
+- **Prettier config:** single quotes, 2-space indent, 100-char print width, trailing commas ES5. Run `npm run format` before committing.
+- **Branching:** only `dev` and `main`. No feature branches. Work on `dev`, merge to `main` when ready.
 
-The fare engine is split across two layers:
+## Environment variables
 
-1. **`useFareData` hook** (`Hooks/useFareData.ts`) — fetches fare rules from the backend per `vehicleTypeId` using `react-query`. Falls back to global/default fares when no vehicle is selected. Fetches four fare types in parallel: `regularFair`, `customRegularFairs`, `longRangeFairs`, and `meterStartData`.
+```
+# External backend (public site booking/vehicles)
+NEXT_PUBLIC_BACKEND_URL=
 
-2. **`useMultipleVehiclesFare` hook** (`utils/useCalculateMultiVehicleFare.ts`) — consumes `useFareData` results and the distance from Zustand to compute the total fare. Priority order: CustomLongRangeFair → LongRangeFair → CustomRegularFair → RegularFair. Distinguishes daytime (07:00–23:59) vs night pricing. Returns `{ totalFare, reasons }` where `reasons` are displayed in yellow text on the form.
+# Google Maps (public site)
+NEXT_PUBLIC_MAP_API_KEY=
 
-### Location / Multi-Stop Logic
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 
-`useLocationSet` hook (`Hooks/useLocationSet.tsx`) manages a dynamic array of `LocationStop` objects (first = pickup, last = dropoff, middle = stops). The `BookingForm` creates two instances — `outbound` and `ret` — and passes them to the `LocationList` component. Dragging to reorder, adding/removing stops, and map click geocoding are all handled inside this hook.
+# Admin session (iron-session)
+SESSION_SECRET=          # min 32 chars, random
 
-### Services Layer
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 
-All API calls live in `services/` and import from `utils/axios.ts`. Key services:
+# Anthropic (AI routes)
+ANTHROPIC_API_KEY=
+```
 
-- `booking.ts` — create/get/update bookings
-- `vehicles.ts` — fetch vehicle types and get suggested vehicles by passenger count
-- `dynamicPages.service.ts` — CMS page content by slug
-- `setting..service.ts` — fetch global settings (e.g., `booking_enabled`, `booking_message`)
-- `stripe.ts` — Stripe payment success handling
+## Current task
 
-### Pages
-
-| Route                                          | Purpose                                               |
-| ---------------------------------------------- | ----------------------------------------------------- |
-| `/`                                            | Home: booking form + payment methods + areas we cover |
-| `/[slug]`                                      | CMS-driven dynamic pages (ISR, 60s revalidation)      |
-| `/airport-transfers`                           | Airport-specific booking form                         |
-| `/caernarfon-taxi`, `/snowdon-taxi`, `/luxury` | Specialised booking forms                             |
-| `/top-destinations`                            | Static content page                                   |
-| `/contact`                                     | Contact form                                          |
-| `/complete-booking/[id]`                       | Driver-facing form to record the charged amount       |
-| `/bookings/success`                            | Confirmation page after booking                       |
-| `/bookings/cancel`                             | Stripe payment cancelled                              |
-| `/thank-you`                                   | Post-contact submission                               |
-
-### Routing & Navigation
-
-Nav items are defined in `utils/NavItems.ts`. Dynamic CMS page slugs are fetched from `/cms/pages/page-links` and rendered via `DynamicPage` component which supports rich HTML content and ad code sections.
-
-### Styling
-
-Tailwind CSS with custom breakpoints (all `max-width` based):
-
-- `mobile`: 575px, `mobilelg`: 650px, `tablet`: 768px, `tabletlg`: 992px, `desktop`: 1200px
-
-Primary brand color: `#265EA6` (blue). Accent: `#FEC601` (yellow). Components use Ant Design 5 alongside Tailwind.
-
-### Code Conventions
-
-- Prettier enforced: single quotes, 2-space indent, 100-char print width, trailing commas (ES5)
-- `'use client'` directive is required on any component that uses hooks, browser APIs, or event handlers — the root layout itself is a client component, so most components inherently run client-side
-- `utils/calculateFare.ts` is entirely commented out legacy code — do not revive it; the active fare logic lives in `utils/useCalculateMultiVehicleFare.ts`
-- All timestamps are formatted in `Europe/London` timezone via `moment-timezone` before sending to the backend
+[Fill in at the start of each session]
