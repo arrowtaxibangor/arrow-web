@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { Banner } from '@/components/Shared/Banner/Banner';
 import { MobileCtaBar } from '@/components/Shared/MobileCtaBar/MobileCtaBar';
+import { BookingSidebarCard } from '@/components/Shared/BookingSidebarCard/BookingSidebarCard';
 import Script from 'next/script';
 
 export default function RootLayout({
@@ -85,7 +86,18 @@ export default function RootLayout({
                   </Header>
                   <Content className="mt-[64px] sm:mt-[70px]">
                     <Banner />
-                    <div className="relative px-16 mobile:px-6 pb-8">{children}</div>
+                    <div className="relative px-16 mobile:px-6 pb-8">
+                      {pathname === '/' || pathname?.startsWith('/blog') ? (
+                        children
+                      ) : (
+                        <div className="flex gap-8 items-start tabletlg:block">
+                          <div className="w-[65%] tabletlg:w-full">{children}</div>
+                          <div className="w-[35%] tabletlg:hidden">
+                            <BookingSidebarCard />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </Content>
                   <Footer className="w-full bg-[#fff] h-auto !p-0 mt-10 mobilelg:mt-6">
                     <FooterComponent />
