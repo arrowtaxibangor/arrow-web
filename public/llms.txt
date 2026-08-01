@@ -1,0 +1,14 @@
+# Arrow Taxi
+
+> Taxi and private-hire booking platform serving Bangor and North Wales. 24/7 rides across Gwynedd, Anglesey, Snowdonia, and airport transfers.
+
+## Key pages
+
+- [Home](https://www.arrow.taxi/): Book a taxi in Bangor or North Wales.
+- [Luxury chauffeur](https://www.arrow.taxi/luxury): Executive and event transport.
+- [Contact](https://www.arrow.taxi/contact): Phone bookings on 01248 209393.
+- [Blog](https://www.arrow.taxi/blog): Travel guides and Arrow Taxi updates.
+
+## Sitemap
+
+- https://www.arrow.taxi/sitemap.xml

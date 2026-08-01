@@ -3,9 +3,10 @@
 import { Col, Row, Image } from 'antd';
 import Link from 'next/link';
 import NextImage from 'next/image';
-import { socialMediaIcons } from '../../../../utils/socialMediaIcons';
+import { SOCIAL_ICON_META } from '../../../../utils/socialMediaIcons';
 import { NavItems } from '../../../../utils/NavItems';
 import { usePagesLink } from '../../../../Hooks/PageLinksFetcher';
+import { useSocialIcons } from '../../../../Hooks/useSocialIcons';
 import {
   ADDRESS_LINE,
   EMAIL,
@@ -22,6 +23,7 @@ const linkClass =
 
 export const FooterComponent = () => {
   const { data, isLoading } = usePagesLink();
+  const socialIcons = useSocialIcons();
 
   // One link list only. Previously a hardcoded column and a dynamic CMS column
   // rendered overlapping sets (Airport Transfers, Caernarfon, Snowdonia and
@@ -65,18 +67,22 @@ export const FooterComponent = () => {
             <BookingButton />
           </div>
           <div className="flex gap-[8px] items-center flex-wrap">
-            {socialMediaIcons?.map((item) => (
-              <Link
-                href={item?.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={item?.href}
-                aria-label={`Arrow Taxi on ${item.label}`}
-                className="flex items-center justify-center w-[44px] h-[44px] rounded-full transition-colors hover:bg-white/10"
-              >
-                <Image src={item?.icon} width={24} height={24} alt="" preview={false} />
-              </Link>
-            ))}
+            {socialIcons.map((item, index) => {
+              const meta = SOCIAL_ICON_META[item.icon];
+              if (!meta) return null;
+              return (
+                <Link
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={`${item.icon}-${index}`}
+                  aria-label={`Arrow Taxi on ${meta.label}`}
+                  className="flex items-center justify-center w-[44px] h-[44px] rounded-full transition-colors hover:bg-white/10"
+                >
+                  <Image src={meta.src} width={24} height={24} alt="" preview={false} />
+                </Link>
+              );
+            })}
           </div>
         </Col>
 

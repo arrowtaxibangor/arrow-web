@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { listAllPages } from '@/lib/supabase/cms';
+import { listAllPages, MAX_MAIN_PAGES } from '@/lib/supabase/cms';
 import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { StatusBadge } from '@/components/admin/ui/StatusBadge';
 import { Button } from '@/components/ui/button';
@@ -8,22 +8,40 @@ import { PagesTableActions } from '@/components/admin/pages/PagesTableActions';
 
 export default async function PagesListPage() {
   const pages = await listAllPages();
+  const atCap = pages.length >= MAX_MAIN_PAGES;
 
   return (
     <div className="px-6 py-6">
       <PageHeader
         title="Pages"
-        description="CMS pages served dynamically from Supabase"
+        description={`CMS pages served dynamically from Supabase (${pages.length}/${MAX_MAIN_PAGES})`}
         className="px-0 pt-0 mb-6"
         action={
-          <Button asChild className="bg-[#265EA6] hover:bg-[#1e4e8c] text-white">
-            <Link href="/admin/pages/new">
+          atCap ? (
+            <Button
+              disabled
+              className="bg-[#265EA6] text-white opacity-50 cursor-not-allowed"
+              title={`Maximum of ${MAX_MAIN_PAGES} main pages reached, delete or archive an existing page to add a new one`}
+            >
               <Plus className="h-4 w-4 mr-1" />
               New Page
-            </Link>
-          </Button>
+            </Button>
+          ) : (
+            <Button asChild className="bg-[#265EA6] hover:bg-[#1e4e8c] text-white">
+              <Link href="/admin/pages/new">
+                <Plus className="h-4 w-4 mr-1" />
+                New Page
+              </Link>
+            </Button>
+          )
         }
       />
+      {atCap && (
+        <p className="mb-4 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-md px-3 py-2">
+          Maximum of {MAX_MAIN_PAGES} main pages reached, delete or archive an existing page to add
+          a new one.
+        </p>
+      )}
 
       <div className="border border-[hsl(var(--border))] rounded-lg overflow-hidden">
         <table className="w-full text-sm">

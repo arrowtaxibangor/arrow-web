@@ -8,7 +8,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Missing configuration' }, { status: 500 });
   }
 
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&key=${apiKey}`;
+  // reviews_sort=newest asks Google for the most recent reviews rather than
+  // the default "most_relevant" ordering, so the homepage carousel reflects
+  // the latest customer feedback. Google still caps the response at 5 reviews.
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=reviews&reviews_sort=newest&key=${apiKey}`;
 
   const res = await fetch(url, { next: { revalidate: 3600 } });
   const data = await res.json();

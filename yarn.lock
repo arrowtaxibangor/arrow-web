@@ -927,6 +927,11 @@
   resolved "https://registry.npmjs.org/@tiptap/extension-code/-/extension-code-3.28.0.tgz"
   integrity sha512-AUw2Acof3CQE6Q6Y22saK4lyg0nkeJ4XXniU65TdAi/9TE66TGiO4NQJJNNPgu8+VMEwl5j8VsIFK8sfTcNYtg==
 
+"@tiptap/extension-color@^3.28.0":
+  version "3.28.0"
+  resolved "https://registry.npmjs.org/@tiptap/extension-color/-/extension-color-3.28.0.tgz"
+  integrity sha512-YbUMUdrgU04GDYoii1wuFVkiTSQoaEQh04kwgQayEQ46aUBEnnaJitWdp39aGMWYTIXD/c9K9cr5Vg8GSKcVxA==
+
 "@tiptap/extension-document@^3.28.0":
   version "3.28.0"
   resolved "https://registry.npmjs.org/@tiptap/extension-document/-/extension-document-3.28.0.tgz"
@@ -961,6 +966,11 @@
   version "3.28.0"
   resolved "https://registry.npmjs.org/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-3.28.0.tgz"
   integrity sha512-neBCMWprkppQUoLWyeJZDHqBw+xKX2oNhLD9MbFlhKIr092zgfP4mpCvQnSkn1OHl156KzZMp070+NyLBjgQ7A==
+
+"@tiptap/extension-image@^3.28.0":
+  version "3.28.0"
+  resolved "https://registry.npmjs.org/@tiptap/extension-image/-/extension-image-3.28.0.tgz"
+  integrity sha512-aKGCdEjyujUcQ6tEtq4EPbKxEC16QsKapv3DeZs1c/UHFiEUalbbPHBnxjGnupiLz75IR+07GYqBoZ81kSCxiA==
 
 "@tiptap/extension-italic@^3.28.0":
   version "3.28.0"
@@ -1008,6 +1018,16 @@
   version "3.28.0"
   resolved "https://registry.npmjs.org/@tiptap/extension-strike/-/extension-strike-3.28.0.tgz"
   integrity sha512-VVj2ZZU9QYqiHLcjqMqRYvuHSsokj/AgUl+6TzLrKjlWwyZ18D4H2vkyI0g70iVTKnUpZ3sEy8WA/rqjgBjqBg==
+
+"@tiptap/extension-text-align@^3.28.0":
+  version "3.28.0"
+  resolved "https://registry.npmjs.org/@tiptap/extension-text-align/-/extension-text-align-3.28.0.tgz"
+  integrity sha512-P+KQMTtCpLFq9dRvy/fbyu2BGALulT/1HtsLbpFG4tKATaKa+cFnJ7rLZF7b3AdAMDNtXdnivxAtixAMBt2QWw==
+
+"@tiptap/extension-text-style@^3.28.0", "@tiptap/extension-text-style@3.28.0":
+  version "3.28.0"
+  resolved "https://registry.npmjs.org/@tiptap/extension-text-style/-/extension-text-style-3.28.0.tgz"
+  integrity sha512-UreMyqZSv770+CXJK/l1qeHUdaNMQAVkxSOPWpiY9FiT8B4OQyjA7WBOlWrzbvVTzfJvXWk2Y3SWgVRx+/Cd9A==
 
 "@tiptap/extension-text@^3.28.0":
   version "3.28.0"

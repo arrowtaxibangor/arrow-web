@@ -73,6 +73,7 @@ export function MyComponent({ value, onChange, label }: MyComponentProps) {
 ```
 
 ## Rules to remember
+
 - Named export only — no `export default`
 - `'use client'` at the top — admin components always use hooks
 - Use shadcn/ui primitives (`Button`, `Input`) — not Ant Design

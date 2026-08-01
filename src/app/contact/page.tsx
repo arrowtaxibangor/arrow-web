@@ -7,6 +7,26 @@ export const metadata: Metadata = {
   title: 'Bangor Taxi - Reliable Gwynedd Taxi Service',
   description:
     'Call us on 01248209393 to book your taxi. We are based in Bangor, Gwynedd and operate 24/7. Snowdon, Tryfan, Beddgelert, Pwllheli, Caernarfon, Anglesey. To and from all major airports',
+  alternates: {
+    canonical: 'https://www.arrow.taxi/contact',
+  },
+  openGraph: {
+    title: 'Bangor Taxi - Reliable Gwynedd Taxi Service',
+    description:
+      'Call us on 01248209393 to book your taxi. We are based in Bangor, Gwynedd and operate 24/7. Snowdon, Tryfan, Beddgelert, Pwllheli, Caernarfon, Anglesey. To and from all major airports',
+    url: 'https://www.arrow.taxi/contact',
+    siteName: 'Arrow Taxi',
+    locale: 'en_GB',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'Bangor Taxi - Reliable Gwynedd Taxi Service',
+      },
+    ],
+  },
 };
 
 export default function Contact() {

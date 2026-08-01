@@ -12,7 +12,26 @@ export const metadata: Metadata = {
   title: 'Blog — Arrow Taxi Bangor',
   description:
     'Tips, guides and local knowledge from Arrow Taxi — airport transfers, Snowdonia tours and more.',
-  alternates: { canonical: '/blog' },
+  alternates: {
+    canonical: 'https://www.arrow.taxi/blog',
+  },
+  openGraph: {
+    title: 'Blog — Arrow Taxi Bangor',
+    description:
+      'Tips, guides and local knowledge from Arrow Taxi — airport transfers, Snowdonia tours and more.',
+    url: 'https://www.arrow.taxi/blog',
+    siteName: 'Arrow Taxi',
+    locale: 'en_GB',
+    type: 'website',
+    images: [
+      {
+        url: 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg',
+        width: 1200,
+        height: 630,
+        alt: 'Blog — Arrow Taxi Bangor',
+      },
+    ],
+  },
 };
 
 type Props = { searchParams: { category?: string } };

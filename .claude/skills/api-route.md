@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
 ```
 
 ## Rules to remember
+
 - `requireAdmin()` is always the first call in every handler — before reading body or DB
 - All DB access goes through a lib function in `src/lib/supabase/` — never inline
 - Use `NO_CACHE` headers on admin responses

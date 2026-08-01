@@ -52,10 +52,12 @@ migrations/      # SQL migration files (run manually via Supabase dashboard)
 ## Two separate API concerns
 
 **CMS/blog data** — Supabase, server-side only:
+
 - Always call functions from `src/lib/supabase/cms.ts` or `src/lib/supabase/blog.ts`
 - Never write raw Supabase queries inline in route handlers
 
 **Booking/vehicles/fares** — external backend at `NEXT_PUBLIC_BACKEND_URL`:
+
 - Always go through `services/` files that import `utils/axios.ts`
 - Axios client auto-attaches `auth-token` from `localStorage['arrow-taxi']`
 

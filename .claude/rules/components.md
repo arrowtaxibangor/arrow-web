@@ -3,6 +3,7 @@
 ## Client vs server
 
 Add `'use client'` at the top of any component file that uses:
+
 - React hooks (`useState`, `useEffect`, `useRef`, etc.)
 - Browser APIs (`window`, `document`, `localStorage`)
 - Event handlers (`onClick`, `onChange`, etc.)
@@ -12,9 +13,9 @@ Omit `'use client'` only on pure server components that fetch data and render st
 
 ## Two component libraries — do not cross-use them
 
-| Area | Library |
-|------|---------|
-| Public site (booking forms, homepage, footer) | Ant Design 5 |
+| Area                                                        | Library                      |
+| ----------------------------------------------------------- | ---------------------------- |
+| Public site (booking forms, homepage, footer)               | Ant Design 5                 |
 | Admin dashboard (`src/components/admin/`, `src/app/admin/`) | shadcn/ui (Radix + Tailwind) |
 
 Do not import Ant Design components into the admin area, and do not import shadcn/ui into public-facing pages.
@@ -35,13 +36,13 @@ export default function MyComponent() { ... }
 
 Use Tailwind classes. The project has custom breakpoints — all `max-width` based:
 
-| Token | Breakpoint |
-|-------|-----------|
-| `mobile` | max 575px |
-| `mobilelg` | max 650px |
-| `tablet` | max 768px |
-| `tabletlg` | max 992px |
-| `desktop` | max 1200px |
+| Token      | Breakpoint |
+| ---------- | ---------- |
+| `mobile`   | max 575px  |
+| `mobilelg` | max 650px  |
+| `tablet`   | max 768px  |
+| `tabletlg` | max 992px  |
+| `desktop`  | max 1200px |
 
 Use the `primary_color` Tailwind token for the brand blue. Do not hardcode `#265EA6` inline.
 The accent yellow `#FEC601` has no token — inline use only where needed.
@@ -53,8 +54,10 @@ Do not use Next.js `<Image>` for Cloudinary-uploaded assets. `images.arrow.taxi`
 (already established in `ImageField.tsx`):
 
 ```tsx
-{/* eslint-disable-next-line @next/next/no-img-element */}
-<img src={url} alt={alt} />
+{
+  /* eslint-disable-next-line @next/next/no-img-element */
+}
+<img src={url} alt={alt} />;
 ```
 
 ## Admin ImageField

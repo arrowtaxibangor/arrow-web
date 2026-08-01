@@ -18,11 +18,7 @@ export type YourRecord = {
 };
 
 export async function getYourRecordById(id: string): Promise<YourRecord | null> {
-  const { data, error } = await supabaseAdmin
-    .from('your_table')
-    .select('*')
-    .eq('id', id)
-    .single();
+  const { data, error } = await supabaseAdmin.from('your_table').select('*').eq('id', id).single();
 
   if (error) {
     if (error.code === 'PGRST116') return null;
@@ -59,11 +55,7 @@ export async function listYourRecords(opts?: {
 export type YourRecordInput = Omit<YourRecord, 'id' | 'created_at' | 'updated_at'>;
 
 export async function createYourRecord(input: YourRecordInput): Promise<YourRecord> {
-  const { data, error } = await supabaseAdmin
-    .from('your_table')
-    .insert(input)
-    .select()
-    .single();
+  const { data, error } = await supabaseAdmin.from('your_table').insert(input).select().single();
 
   if (error) throw error;
   return data;
@@ -90,6 +82,7 @@ export async function updateYourRecord(
 ```
 
 ## Rules to remember
+
 - Always use `supabaseAdmin` — never the anon `supabase` client for writes
 - `PGRST116` = row not found — return `null`, do not throw
 - All other errors should be thrown and caught in the route handler

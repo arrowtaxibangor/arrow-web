@@ -9,11 +9,13 @@ import {
   Users,
   Settings,
   LogOut,
+  Home,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+  { href: '/admin/homepage', label: 'Homepage', icon: Home },
   { href: '/admin/pages', label: 'Pages', icon: FileText },
   { href: '/admin/blog', label: 'Blog', icon: BookOpen },
   { href: '/admin/blog/comments', label: 'Comments', icon: MessageSquare },

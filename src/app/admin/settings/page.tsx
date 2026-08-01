@@ -5,9 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { SocialIconsField } from '@/components/admin/settings/SocialIconsField';
+import type { SocialIcon } from '@/lib/supabase/cms';
 
 export default function SettingsPage() {
   const [bookingUrl, setBookingUrl] = useState('');
+  const [socialIcons, setSocialIcons] = useState<SocialIcon[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(
@@ -17,7 +20,10 @@ export default function SettingsPage() {
   useEffect(() => {
     fetch('/api/admin/settings')
       .then((r) => r.json())
-      .then((d) => setBookingUrl(d.booking_url ?? ''))
+      .then((d) => {
+        setBookingUrl(d.booking_url ?? '');
+        setSocialIcons(Array.isArray(d.social_icons) ? d.social_icons : []);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -95,6 +101,12 @@ export default function SettingsPage() {
           )}
         </CardContent>
       </Card>
+
+      {loading || socialIcons === null ? (
+        <div className="max-w-xl h-40 bg-[hsl(var(--muted))] animate-pulse rounded-md" />
+      ) : (
+        <SocialIconsField initial={socialIcons} />
+      )}
     </div>
   );
 }

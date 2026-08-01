@@ -14,20 +14,30 @@ export async function generateStaticParams() {
   return pages.map((p) => ({ slug: p.slug }));
 }
 
+const HOMEPAGE_BANNER = 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg';
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await getPageBySlug(params.slug);
   if (!page) return { title: 'Page Not Found - Arrow Taxi' };
 
+  const canonicalUrl = page.canonical_url ?? `https://www.arrow.taxi/${page.slug}`;
+  const ogTitle = page.meta_title ?? `${page.title} - Arrow Taxi`;
+  const ogDescription = page.meta_description ?? '';
+  const ogImageUrl = page.og_image_url ?? HOMEPAGE_BANNER;
+
   return {
-    metadataBase: new URL('https://arrow.taxi'),
-    title: page.meta_title ?? `${page.title} - Arrow Taxi`,
-    description: page.meta_description ?? '',
+    title: ogTitle,
+    description: ogDescription,
     keywords: page.meta_keywords ?? '',
-    alternates: { canonical: page.canonical_url ?? `/${page.slug}` },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: page.meta_title ?? page.title,
-      description: page.meta_description ?? '',
-      images: page.og_image_url ? [page.og_image_url] : [],
+      title: ogTitle,
+      description: ogDescription,
+      url: canonicalUrl,
+      siteName: 'Arrow Taxi',
+      locale: 'en_GB',
+      type: 'website',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: ogTitle }],
     },
   };
 }

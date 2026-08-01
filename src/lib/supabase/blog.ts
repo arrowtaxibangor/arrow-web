@@ -16,6 +16,7 @@ export type WriterProfile = {
 export type BlogPost = {
   id: string;
   title: string;
+  h1: string | null;
   slug: string;
   excerpt: string | null;
   content: string | null;

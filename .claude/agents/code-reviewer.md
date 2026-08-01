@@ -11,12 +11,14 @@ When invoked:
 2. For each changed file, review against these standards:
 
 **Security (must fix)**
+
 - Admin API routes: does `requireAdmin()` appear as the very first call? If not, flag it.
 - Is `supabaseAdmin` imported anywhere that could be client-bundled (any file under `src/components/` or any file with `'use client'`)? Flag immediately.
 - Are there any secrets, API keys, or credentials hardcoded?
 - Is user input sanitised before database writes?
 
 **Correctness (must fix)**
+
 - Is `export default` used anywhere except Next.js page/layout/error files? Flag and name the correct named export.
 - Are there `any` types? Identify each one.
 - Are there missing `'use client'` directives on components that use hooks or browser APIs?
@@ -24,6 +26,7 @@ When invoked:
 - For new image fields: is the URL stored from `POST /api/admin/upload` response (an `images.arrow.taxi` proxy URL), not a raw Cloudinary URL?
 
 **Quality (optional but recommended)**
+
 - Unnecessary `console.log` statements (not in catch blocks)?
 - TypeScript return types missing on exported functions?
 - Tailwind hex colours used inline where `primary_color` Tailwind class would work?

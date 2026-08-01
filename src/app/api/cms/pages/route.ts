@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
-import { createPage, listPublishedPages } from '@/lib/supabase/cms';
+import { countPages, createPage, listPublishedPages, MAX_MAIN_PAGES } from '@/lib/supabase/cms';
 import { sessionOptions, type SessionData } from '@/lib/auth/session';
+
+const MAX_PAGES_MESSAGE = `Maximum of ${MAX_MAIN_PAGES} main pages reached, delete or archive an existing page to add a new one`;
 
 async function requireAdmin() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions);
@@ -32,6 +34,10 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     await requireAdmin();
+    const existing = await countPages();
+    if (existing >= MAX_MAIN_PAGES) {
+      return NextResponse.json({ error: MAX_PAGES_MESSAGE }, { status: 409 });
+    }
     const body = await req.json();
     const page = await createPage(body);
     return NextResponse.json({ page }, { status: 201 });

@@ -11,6 +11,7 @@ When invoked:
 Review the diff for:
 
 **Convention violations (must fix)**
+
 - Any `export default` outside Next.js page/layout/error files
 - `supabaseAdmin` imported in client components or `'use client'` files
 - Admin API routes missing `requireAdmin()` as first call
@@ -20,11 +21,13 @@ Review the diff for:
 - Missing `'use client'` on components using hooks/browser APIs
 
 **Security (must fix)**
+
 - Hardcoded secrets, API keys, or credentials in any file
 - User input written to the database without validation
 - New admin routes that are reachable without `requireAdmin()`
 
 **Quality (flag but not blocking)**
+
 - `console.log` outside catch blocks
 - Hex colour values hardcoded where a Tailwind token exists
 - TypeScript return types missing on exported async functions

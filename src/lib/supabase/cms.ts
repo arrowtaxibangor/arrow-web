@@ -133,6 +133,82 @@ export async function setSiteSetting(key: string, value: string): Promise<void> 
   if (error) throw error;
 }
 
+// The fixed set of social icons the admin UI can pick from. Extending this list
+// requires adding the matching SVG under /public/Assets/Icons/<slug>.svg — no
+// new icon dependency is introduced here (existing SVGs are reused).
+export const SUPPORTED_SOCIAL_ICONS = [
+  'facebook',
+  'whatsapp',
+  'instagram',
+  'youtube',
+  'pinterest',
+  'twitter',
+] as const;
+
+export type SupportedSocialIcon = (typeof SUPPORTED_SOCIAL_ICONS)[number];
+
+export type SocialIcon = {
+  icon: SupportedSocialIcon;
+  url: string;
+};
+
+function isSupportedIcon(value: unknown): value is SupportedSocialIcon {
+  return typeof value === 'string' && (SUPPORTED_SOCIAL_ICONS as readonly string[]).includes(value);
+}
+
+function parseSocialIcons(raw: string | null): SocialIcon[] {
+  if (!raw) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    const out: SocialIcon[] = [];
+    for (const entry of parsed) {
+      if (
+        entry &&
+        typeof entry === 'object' &&
+        'icon' in entry &&
+        'url' in entry &&
+        isSupportedIcon((entry as { icon: unknown }).icon) &&
+        typeof (entry as { url: unknown }).url === 'string'
+      ) {
+        out.push({
+          icon: (entry as { icon: SupportedSocialIcon }).icon,
+          url: (entry as { url: string }).url,
+        });
+      }
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+export async function getSocialIcons(): Promise<SocialIcon[]> {
+  const raw = await getSiteSetting('social_icons');
+  return parseSocialIcons(raw);
+}
+
+export async function setSocialIcons(icons: SocialIcon[]): Promise<void> {
+  // Filter to supported icons and drop entries with an empty URL so the admin
+  // can't persist icon slugs the renderer has no SVG for.
+  const clean = icons.filter(
+    (i) => isSupportedIcon(i.icon) && typeof i.url === 'string' && i.url.trim().length > 0
+  );
+  await setSiteSetting('social_icons', JSON.stringify(clean));
+}
+
+// All cms_pages rows count as "main pages" for the cap — published, draft, or
+// header-hidden alike. Cap is on total rows that exist, not visibility.
+export async function countPages(): Promise<number> {
+  const { count, error } = await supabaseAdmin
+    .from('cms_pages')
+    .select('*', { count: 'exact', head: true });
+  if (error) throw error;
+  return count ?? 0;
+}
+
+export const MAX_MAIN_PAGES = 6;
+
 export async function listAllPages(): Promise<CmsPage[]> {
   const { data, error } = await supabaseAdmin
     .from('cms_pages')

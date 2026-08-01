@@ -28,6 +28,7 @@ const CATEGORIES = ['Local Guide', 'Airport Tips', 'Snowdonia', 'News', 'Travel 
 
 type FormFields = {
   title: string;
+  h1: string;
   slug: string;
   excerpt: string;
   cover_image_url: string;
@@ -70,6 +71,7 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
   } = useForm<FormFields>({
     defaultValues: {
       title: post?.title ?? '',
+      h1: post?.h1 ?? '',
       slug: post?.slug ?? '',
       excerpt: post?.excerpt ?? '',
       cover_image_url: post?.cover_image_url ?? '',
@@ -107,6 +109,7 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
 
     const payload = {
       title: data.title,
+      h1: data.h1 || null,
       slug: data.slug,
       excerpt: data.excerpt || null,
       content: content || null,
@@ -192,6 +195,15 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
                 placeholder="Post title"
               />
               {errors.title && <p className="text-xs text-red-600 mt-1">Title is required</p>}
+            </div>
+            <div>
+              <Label htmlFor="h1">On-page H1 (optional)</Label>
+              <Input
+                id="h1"
+                {...register('h1')}
+                className="mt-1 text-base"
+                placeholder="Defaults to Title if blank"
+              />
             </div>
             <div>
               <Label htmlFor="excerpt">Excerpt</Label>

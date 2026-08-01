@@ -21,19 +21,32 @@ export async function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }));
 }
 
+const HOMEPAGE_BANNER = 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg';
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getBlogPostWithWriter(params.slug);
   if (!post) return { title: 'Post Not Found — Arrow Taxi' };
+
+  const canonicalUrl = `https://www.arrow.taxi/blog/${post.slug}`;
+  const ogTitle = post.meta_title ?? `${post.title} — Arrow Taxi Blog`;
+  const ogDescription = post.meta_description ?? post.excerpt ?? '';
+  const ogImageUrl = post.cover_image_url ?? HOMEPAGE_BANNER;
+
   return {
-    metadataBase: new URL('https://arrow.taxi'),
-    title: post.meta_title ?? `${post.title} — Arrow Taxi Blog`,
-    description: post.meta_description ?? post.excerpt ?? '',
-    alternates: { canonical: `/blog/${post.slug}` },
+    title: ogTitle,
+    description: ogDescription,
+    alternates: { canonical: canonicalUrl },
     openGraph: {
-      title: post.meta_title ?? post.title,
-      description: post.meta_description ?? post.excerpt ?? '',
-      images: post.cover_image_url ? [post.cover_image_url] : [],
+      title: ogTitle,
+      description: ogDescription,
+      url: canonicalUrl,
+      siteName: 'Arrow Taxi',
+      locale: 'en_GB',
       type: 'article',
+      publishedTime: post.created_at,
+      modifiedTime: post.updated_at,
+      authors: post.author ? [post.author] : undefined,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: ogTitle }],
     },
   };
 }
@@ -105,7 +118,7 @@ export default async function BlogPostPage({ params }: Props) {
             className="font-extrabold text-gray-900 leading-[1.1] tracking-[-0.025em] mb-7"
             style={{ fontSize: 'clamp(32px, 4.5vw, 52px)', maxWidth: 840 }}
           >
-            {post.title}
+            {post.h1 || post.title}
           </h1>
 
           <div className="flex items-center gap-3.5">

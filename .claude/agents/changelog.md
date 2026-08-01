@@ -35,6 +35,7 @@ When invoked:
 ```
 
 5. Prepend the entry to `CHANGELOG.md`. Create the file if it does not exist, with the standard header:
+
 ```
 # Changelog
 

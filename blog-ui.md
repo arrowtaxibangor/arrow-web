@@ -13,11 +13,13 @@ Full-width section with a subtle gradient wash background.
 **Layout:** Max-width 1280px, centred. Two columns side by side (flex, items aligned to bottom), wrapping on small screens.
 
 **Left column (max 640px wide):**
+
 - Small all-caps eyebrow label above the heading (e.g. "Aronix Blog") -- monospace font, subdued colour, light letter-spacing.
 - Large display heading, font-weight 800, fluid size clamped between 40px and 64px, tight line-height (1.06), strong negative letter-spacing (-0.025em).
 - Subheading paragraph at 18px, slightly muted colour, max 480px wide, relaxed line-height (1.6).
 
 **Right column (shrink-0, text-right):**
+
 - Only shown when there is at least one published post.
 - A large number (52px, weight 800, tight tracking) showing total post count.
 - Below it, a small mono-font all-caps label: "Article published" / "Articles published".
@@ -48,6 +50,7 @@ Shown only on the unfiltered view when a featured post exists. Sits above the re
 **Layout:** CSS grid, 1 column on mobile, 2 columns on desktop (content | image at 44% width).
 
 **Content column (padding 40px mobile / 48px desktop, flex column, space-between):**
+
 - Top badges row: dark "FEATURED" mono badge (10px, uppercase, 0.1em letter-spacing, dark bg, white text) + category pill side by side.
 - Heading: display font, weight 800, fluid 24px--34px, line-height 1.15, tight tracking.
 - Excerpt paragraph: 16px, muted colour, 1.7 line-height.
@@ -76,11 +79,13 @@ White background, 16px border radius, single-pixel border, overflow hidden, flex
 On hover: card lifts 3px and a large drop-shadow appears. Transition: 200ms ease-out.
 
 **Top: cover image**
+
 - 16:9 aspect ratio via percentage padding trick.
 - If a cover image URL exists, renders a fill-mode Next.js Image.
 - If no image, a diagonal gradient based on post category fills the placeholder.
 
 **Body (24px padding, flex column, gap 12px, flex-1):**
+
 - Category pill (self-start, aligned left).
 - Post title: display font, weight 700, 18px, line-height 1.3, tight tracking. The whole title is a link.
 - Excerpt: 14px, muted colour, 1.6 line-height. Fills remaining vertical space (flex-1).
@@ -171,6 +176,7 @@ Section with 56px top padding, 96px bottom padding.
 Shown only when at least one related post exists. Full-width section, soft blush background, 80px vertical padding.
 
 **Header block (bottom margin ~40px):**
+
 - Small eyebrow label ("Continue reading").
 - Section heading: display font, weight 700, fluid 24px--32px, tight tracking.
 
@@ -182,21 +188,21 @@ Shown only when at least one related post exists. Full-width section, soft blush
 
 Applied via `.article-prose` on the wrapping div around the rendered HTML content.
 
-| Element | Style |
-|---|---|
-| `h1` | Display font, weight 800, fluid sizes, snug line-height, tight tracking, margin-top ~48px |
-| `h2` | Same as h1 but slightly smaller |
-| `h3 / h4` | Display font, weight 700, progressively smaller |
-| `p` | 24px bottom margin |
-| `a` | Brand primary colour, underline, 3px offset. Hover darkens. |
-| `img` | Full width, medium border radius, vertical margin. |
-| `code` | Monospace, 0.88em, light grey background pill, 2px 6px padding, small border radius |
-| `pre` | Dark surface background, light grey text, 24px padding, medium border radius, horizontal scroll |
-| `pre code` | Inherits pre; no extra background or padding |
-| `blockquote` | 4px left border in brand primary colour, 24px left padding, italic, muted text colour |
-| `ul / ol` | 24px left padding, 24px bottom margin |
-| `li` | 8px bottom margin |
-| `hr` | No border, 1px top border in default border colour, large vertical margin |
+| Element      | Style                                                                                           |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| `h1`         | Display font, weight 800, fluid sizes, snug line-height, tight tracking, margin-top ~48px       |
+| `h2`         | Same as h1 but slightly smaller                                                                 |
+| `h3 / h4`    | Display font, weight 700, progressively smaller                                                 |
+| `p`          | 24px bottom margin                                                                              |
+| `a`          | Brand primary colour, underline, 3px offset. Hover darkens.                                     |
+| `img`        | Full width, medium border radius, vertical margin.                                              |
+| `code`       | Monospace, 0.88em, light grey background pill, 2px 6px padding, small border radius             |
+| `pre`        | Dark surface background, light grey text, 24px padding, medium border radius, horizontal scroll |
+| `pre code`   | Inherits pre; no extra background or padding                                                    |
+| `blockquote` | 4px left border in brand primary colour, 24px left padding, italic, muted text colour           |
+| `ul / ol`    | 24px left padding, 24px bottom margin                                                           |
+| `li`         | 8px bottom margin                                                                               |
+| `hr`         | No border, 1px top border in default border colour, large vertical margin                       |
 
 ---
 

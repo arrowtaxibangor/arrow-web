@@ -10,6 +10,7 @@ Applies to all Supabase usage in the project.
 - `supabaseAdmin` — service-role key, bypasses RLS. **Server-side only.**
 
 **Never import `supabaseAdmin` in:**
+
 - Any file with `'use client'` at the top
 - Any file under `src/components/` (unless it is a Server Component with no `'use client'`)
 - Any utility file that is also imported by client components
@@ -19,6 +20,7 @@ The service-role key grants full database access. Exposing it to the browser is 
 ## Query functions live in lib files
 
 All Supabase queries must be written as exported functions in one of:
+
 - `src/lib/supabase/cms.ts` — for `cms_pages`, `cms_sections`, `site_settings`
 - `src/lib/supabase/blog.ts` — for `blog_posts`, `blog_comments`, `writer_profiles`
 

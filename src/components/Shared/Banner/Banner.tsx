@@ -8,8 +8,11 @@ import { getGoogleRating } from '../../../../services/googleRating';
 import { usePathname } from 'next/navigation';
 import { usePageBySlug } from '../../../../Hooks/FetchPageBySlug';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BookingButton } from '../BookingButton/BookingButton';
 import { PHONE_DISPLAY } from '../../../../utils/contact';
+import { useSocialIcons } from '../../../../Hooks/useSocialIcons';
+import { SOCIAL_ICON_META } from '../../../../utils/socialMediaIcons';
 
 export const Banner = () => {
   const pathName = usePathname();
@@ -22,6 +25,7 @@ export const Banner = () => {
   });
 
   const { data: DynamicData } = usePageBySlug();
+  const socialIcons = useSocialIcons();
 
   if (pathName?.startsWith('/blog')) return null;
 
@@ -109,6 +113,33 @@ export const Banner = () => {
         <div className="w-full max-w-[320px] sm:max-w-none pt-1">
           <BookingButton />
         </div>
+
+        {socialIcons.length > 0 && (
+          <div className="flex items-center gap-x-4 mobile:gap-x-3 pt-2">
+            {socialIcons.map((item, index) => {
+              const meta = SOCIAL_ICON_META[item.icon];
+              if (!meta) return null;
+              return (
+                <Link
+                  key={`${item.icon}-${index}`}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Arrow Taxi on ${meta.label}`}
+                  className="flex items-center justify-center w-[36px] h-[36px] mobile:w-[32px] mobile:h-[32px] rounded-full transition-colors hover:bg-white/10"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={meta.src}
+                    alt=""
+                    className="w-[22px] h-[22px] mobile:w-[20px] mobile:h-[20px] invert brightness-0"
+                    style={{ filter: 'brightness(0) invert(1)' }}
+                  />
+                </Link>
+              );
+            })}
+          </div>
+        )}
 
         {showRating && (
           <div className="flex items-center gap-x-2 text-[18px] mobile:text-[16px] !font-[700] !leading-[100%] text-white">
