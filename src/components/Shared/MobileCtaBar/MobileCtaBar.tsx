@@ -34,7 +34,7 @@ export const MobileCtaBar = () => {
           href={bookingUrl || '#'}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-[52px] flex-1 items-center justify-center rounded-full bg-[#FEC601] px-4 text-[16px] font-bold text-black transition-colors hover:bg-yellow-400"
+          className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-[#FEC601] px-4 text-[16px] font-bold text-black transition-colors hover:bg-yellow-400"
         >
           Book now
         </Link>

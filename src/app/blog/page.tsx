@@ -4,7 +4,6 @@ import type { BlogCategory } from '@/lib/supabase/blog';
 import { PostCard } from '@/components/blog/PostCard';
 import { CategoryTabs } from '@/components/blog/CategoryTabs';
 import { FeaturedPostCard } from '@/components/blog/FeaturedPostCard';
-import { NewsletterBand } from '@/components/blog/NewsletterBand';
 
 export const revalidate = 60;
 
@@ -106,8 +105,6 @@ export default async function BlogIndexPage({ searchParams }: Props) {
           </div>
         )}
       </div>
-
-      <NewsletterBand />
     </>
   );
 }

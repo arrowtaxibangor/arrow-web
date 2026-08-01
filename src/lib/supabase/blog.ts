@@ -2,17 +2,6 @@ import { supabaseAdmin } from './client';
 
 export type BlogCategory = 'Local Guide' | 'Airport Tips' | 'Snowdonia' | 'News' | 'Travel Tips';
 
-export type WriterProfile = {
-  id: string;
-  name: string;
-  role: string | null;
-  email: string | null;
-  bio: string | null;
-  avatar_url: string | null;
-  twitter_handle: string | null;
-  linkedin_url: string | null;
-};
-
 export type BlogPost = {
   id: string;
   title: string;
@@ -34,25 +23,9 @@ export type BlogPost = {
   views: number;
   created_at: string;
   updated_at: string;
-  writer_profiles?: WriterProfile | null;
 };
 
-export type BlogComment = {
-  id: string;
-  post_id: string;
-  author_name: string;
-  author_email: string;
-  content: string;
-  approved: boolean;
-  created_at: string;
-};
-
-export type BlogPostInput = Omit<
-  BlogPost,
-  'id' | 'views' | 'created_at' | 'updated_at' | 'writer_profiles'
->;
-export type BlogCommentInput = Omit<BlogComment, 'id' | 'approved' | 'created_at'>;
-export type WriterProfileInput = Omit<WriterProfile, 'id'>;
+export type BlogPostInput = Omit<BlogPost, 'id' | 'views' | 'created_at' | 'updated_at'>;
 
 // ── Blog Posts ─────────────────────────────────────────────
 
@@ -62,10 +35,7 @@ export async function listBlogPosts(opts?: {
   category?: BlogCategory;
   limit?: number;
 }): Promise<BlogPost[]> {
-  let q = supabaseAdmin
-    .from('blog_posts')
-    .select('*, writer_profiles(*)')
-    .order('created_at', { ascending: false });
+  let q = supabaseAdmin.from('blog_posts').select('*').order('created_at', { ascending: false });
 
   if (opts?.publishedOnly !== false) q = q.eq('published', true);
   if (opts?.featured !== undefined) q = q.eq('featured', opts.featured);
@@ -80,7 +50,7 @@ export async function listBlogPosts(opts?: {
 export async function getBlogPostWithWriter(slug: string): Promise<BlogPost | null> {
   const { data, error } = await supabaseAdmin
     .from('blog_posts')
-    .select('*, writer_profiles(*)')
+    .select('*')
     .eq('slug', slug)
     .single();
 
@@ -132,151 +102,20 @@ export async function getBlogStats(): Promise<{
   totalPosts: number;
   publishedPosts: number;
   totalViews: number;
-  pendingComments: number;
 }> {
-  const [postsRes, commentsRes] = await Promise.all([
-    supabaseAdmin.from('blog_posts').select('published, views'),
-    supabaseAdmin.from('blog_comments').select('id', { count: 'exact' }).eq('approved', false),
-  ]);
-
-  if (postsRes.error) throw postsRes.error;
-  if (commentsRes.error) throw commentsRes.error;
-
-  const posts = postsRes.data ?? [];
+  const { data, error } = await supabaseAdmin.from('blog_posts').select('published, views');
+  if (error) throw error;
+  const posts = data ?? [];
   return {
     totalPosts: posts.length,
     publishedPosts: posts.filter((p) => p.published).length,
     totalViews: posts.reduce((sum, p) => sum + (p.views ?? 0), 0),
-    pendingComments: commentsRes.count ?? 0,
   };
-}
-
-// ── Comments ───────────────────────────────────────────────
-
-export async function listComments(postId: string, approvedOnly = true): Promise<BlogComment[]> {
-  let q = supabaseAdmin
-    .from('blog_comments')
-    .select('*')
-    .eq('post_id', postId)
-    .order('created_at', { ascending: true });
-
-  if (approvedOnly) q = q.eq('approved', true);
-
-  const { data, error } = await q;
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function createComment(input: BlogCommentInput): Promise<BlogComment> {
-  const { data, error } = await supabaseAdmin.from('blog_comments').insert(input).select().single();
-
-  if (error) throw error;
-  return data;
-}
-
-export async function updateComment(
-  id: string,
-  input: Pick<BlogComment, 'approved'>
-): Promise<BlogComment> {
-  const { data, error } = await supabaseAdmin
-    .from('blog_comments')
-    .update(input)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteComment(id: string): Promise<void> {
-  const { error } = await supabaseAdmin.from('blog_comments').delete().eq('id', id);
-  if (error) throw error;
-}
-
-// ── Writer Profiles ────────────────────────────────────────
-
-export async function listWriterProfiles(): Promise<WriterProfile[]> {
-  const { data, error } = await supabaseAdmin.from('writer_profiles').select('*').order('name');
-
-  if (error) throw error;
-  return data ?? [];
-}
-
-export async function createWriterProfile(input: WriterProfileInput): Promise<WriterProfile> {
-  const { data, error } = await supabaseAdmin
-    .from('writer_profiles')
-    .insert(input)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-export async function updateWriterProfile(
-  id: string,
-  input: Partial<WriterProfileInput>
-): Promise<WriterProfile> {
-  const { data, error } = await supabaseAdmin
-    .from('writer_profiles')
-    .update(input)
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-export async function deleteWriterProfile(id: string): Promise<void> {
-  const { error } = await supabaseAdmin.from('writer_profiles').delete().eq('id', id);
-  if (error) throw error;
-}
-
-export type AdminComment = BlogComment & { post_slug: string; post_title: string };
-
-export async function listAllCommentsAdmin(filter?: {
-  approved?: boolean;
-}): Promise<AdminComment[]> {
-  let q = supabaseAdmin
-    .from('blog_comments')
-    .select('*, blog_posts!post_id(id, title, slug)')
-    .order('created_at', { ascending: false });
-
-  if (filter?.approved !== undefined) {
-    q = q.eq('approved', filter.approved);
-  }
-
-  const { data, error } = await q;
-  if (error) throw error;
-
-  return (data ?? []).map((c: Record<string, unknown>) => {
-    const posts = c.blog_posts as { slug: string; title: string } | null;
-    return {
-      id: c.id as string,
-      post_id: c.post_id as string,
-      author_name: c.author_name as string,
-      author_email: c.author_email as string,
-      content: c.content as string,
-      approved: c.approved as boolean,
-      created_at: c.created_at as string,
-      post_slug: posts?.slug ?? '',
-      post_title: posts?.title ?? 'Unknown',
-    };
-  });
 }
 
 export interface DashboardStats {
   totalPublishedPosts: number;
   totalDraftPosts: number;
-  pendingCommentsTotal: number;
-  postsWithPendingComments: {
-    post_id: string;
-    post_title: string;
-    post_slug: string;
-    pending_count: number;
-  }[];
   topPostsByViews: {
     id: string;
     title: string;
@@ -289,14 +128,12 @@ export interface DashboardStats {
 }
 
 export async function getDashboardStats(): Promise<DashboardStats> {
-  const [postsRes, commentsRes, pagesRes] = await Promise.all([
+  const [postsRes, pagesRes] = await Promise.all([
     supabaseAdmin.from('blog_posts').select('id, title, slug, published, views, updated_at'),
-    supabaseAdmin.from('blog_comments').select('id, post_id, approved').eq('approved', false),
     supabaseAdmin.from('cms_pages').select('id, title, slug, meta_description'),
   ]);
 
   const posts = postsRes.data ?? [];
-  const pendingComments = commentsRes.data ?? [];
   const pages = pagesRes.data ?? [];
 
   const published = posts.filter((p) => p.published);
@@ -313,20 +150,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       updated_at: p.updated_at,
     }));
 
-  const pendingByPost: Record<string, number> = {};
-  for (const c of pendingComments) {
-    pendingByPost[c.post_id] = (pendingByPost[c.post_id] ?? 0) + 1;
-  }
-  const postMap = Object.fromEntries(posts.map((p) => [p.id, p]));
-  const postsWithPendingComments = Object.entries(pendingByPost)
-    .map(([post_id, pending_count]) => ({
-      post_id,
-      post_title: postMap[post_id]?.title ?? 'Unknown',
-      post_slug: postMap[post_id]?.slug ?? '',
-      pending_count,
-    }))
-    .sort((a, b) => b.pending_count - a.pending_count);
-
   const lastPublished = [...published].sort(
     (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
   )[0];
@@ -341,8 +164,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   return {
     totalPublishedPosts: published.length,
     totalDraftPosts: drafts.length,
-    pendingCommentsTotal: pendingComments.length,
-    postsWithPendingComments,
     topPostsByViews,
     pagesWithoutMetaDescription,
     daysSinceLastPublishedPost,

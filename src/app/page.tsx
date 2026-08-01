@@ -16,6 +16,7 @@ const FALLBACK = {
     'Call us on 01248209393 to book your taxi. We are based in Bangor, Gwynedd and operate 24/7. Snowdon, Tryfan, Beddgelert, Pwllheli, Caernarfon, Anglesey. To and from all major airports',
   og_image_url: 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg',
   phone_number: '+441248209393',
+  areas_html: `<p>Arrow Taxi Bangor is the new rising star of Gwynedd taxi services. Whether you are looking to book a long distance ride or a local night out, you can book with confidence. We offer nice clean cars and friendly professional drivers.</p><p>If you are a tourist looking to book a taxi for a day/week you are welcome to discuss your plans with the driver and they can then give you our best quote.</p><h2>Popular Areas We Cover:</h2><ul><li>Gwynedd</li><li>Bangor Train Station</li><li>Caernarfon</li><li>Snowdonia National Park</li><li>Beddgelert</li><li>South Stack, Anglesey</li><li>Penmon Lighthouse, Anglesey</li><li>Porthmadog</li><li>Pwllheli</li></ul>`,
 };
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -58,6 +59,7 @@ export default async function Home() {
   const heroBg = c.hero_background_image || FALLBACK.hero_background_image;
   const phone = c.phone_number || FALLBACK.phone_number;
   const ogImage = c.og_image_url || FALLBACK.og_image_url;
+  const areasHtml = c.areas_html || FALLBACK.areas_html;
 
   const hasRating =
     placeDetails !== null &&
@@ -147,7 +149,7 @@ export default async function Home() {
         </div>
       </div>
       <PaymentMethods />
-      <AreasWeCover />
+      <AreasWeCover html={areasHtml} />
     </div>
   );
 }

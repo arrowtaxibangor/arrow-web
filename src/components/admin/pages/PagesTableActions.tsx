@@ -10,16 +10,24 @@ import type { CmsPage } from '@/lib/supabase/cms';
 export function PagesTableActions({ page }: { page: CmsPage }) {
   const [open, setOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   async function handleDelete() {
     setDeleting(true);
+    setError(null);
     try {
-      await fetch(`/api/cms/pages/${page.slug}`, { method: 'DELETE' });
+      const res = await fetch(`/api/cms/pages/${page.slug}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error ?? `Delete failed (${res.status})`);
+      }
+      setOpen(false);
       router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Delete failed');
     } finally {
       setDeleting(false);
-      setOpen(false);
     }
   }
 
@@ -44,9 +52,16 @@ export function PagesTableActions({ page }: { page: CmsPage }) {
       <ConfirmDialog
         open={open}
         title={`Delete "${page.title}"?`}
-        description="This will permanently delete the page and all its sections. This cannot be undone."
+        description={
+          error ??
+          'This will permanently delete the page and all its sections. This cannot be undone.'
+        }
+        confirmLabel={deleting ? 'Deleting…' : 'Delete'}
         onConfirm={handleDelete}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setOpen(false);
+          setError(null);
+        }}
       />
     </div>
   );

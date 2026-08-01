@@ -42,7 +42,7 @@ export default function CmsPageRenderer({
                   href={bookingUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-10 py-4 bg-[#FEC601] hover:bg-yellow-400 text-black font-bold text-[20px] rounded-full shadow-lg transition-colors"
+                  className="px-10 py-4 bg-[#FEC601] hover:bg-yellow-400 text-black font-bold text-[20px] rounded-xl shadow-lg transition-colors"
                 >
                   {section.button_text ?? 'Book Me'}
                 </a>

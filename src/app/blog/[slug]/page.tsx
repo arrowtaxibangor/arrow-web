@@ -1,14 +1,13 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getBlogPostWithWriter, listBlogPosts, listComments } from '@/lib/supabase/blog';
+import { getBlogPostWithWriter, listBlogPosts } from '@/lib/supabase/blog';
 import { ViewTracker } from '@/components/blog/ViewTracker';
-import { CommentForm } from '@/components/blog/CommentForm';
 import { PostCard } from '@/components/blog/PostCard';
 import { Avatar } from '@/components/blog/Avatar';
 import { CategoryPill } from '@/components/blog/CategoryPill';
 import { PostCover } from '@/components/blog/PostCover';
-import { NewsletterMiniCard } from '@/components/blog/NewsletterMiniCard';
+import { BookRideMiniCard } from '@/components/blog/BookRideMiniCard';
 import { PHONE_DISPLAY, PHONE_HREF } from '../../../../utils/contact';
 
 export const revalidate = 60;
@@ -66,8 +65,6 @@ export default async function BlogPostPage({ params }: Props) {
   ]);
 
   if (!post || !post.published) notFound();
-
-  const comments = await listComments(post.id, true);
 
   const related = allPosts
     .filter((p) => p.slug !== post.slug && p.category === post.category)
@@ -184,32 +181,6 @@ export default async function BlogPostPage({ params }: Props) {
                   Call {PHONE_DISPLAY} →
                 </a>
               </div>
-
-              {/* Comments */}
-              <section className="mt-16 pt-12 border-t border-gray-200">
-                <h2 className="text-[22px] font-bold text-gray-900 mb-8">
-                  Comments {comments.length > 0 && `(${comments.length})`}
-                </h2>
-
-                {comments.length > 0 && (
-                  <div className="flex flex-col gap-6 mb-10">
-                    {comments.map((c) => (
-                      <div key={c.id} className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold text-sm text-gray-900">
-                            {c.author_name}
-                          </span>
-                          <span className="text-xs text-gray-400">{formatDate(c.created_at)}</span>
-                        </div>
-                        <p className="text-sm text-gray-700">{c.content}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <h3 className="text-[16px] font-semibold text-gray-900 mb-4">Leave a comment</h3>
-                <CommentForm slug={post.slug} />
-              </section>
             </div>
 
             {/* Sidebar */}
@@ -222,21 +193,14 @@ export default async function BlogPostPage({ params }: Props) {
                   <Avatar name={post.author} size="xl" />
                   <div>
                     <p className="font-semibold text-[15px] text-gray-900">{post.author}</p>
-                    {(post.author_role ?? post.writer_profiles?.role) && (
-                      <p className="text-[12px] text-gray-400">
-                        {post.author_role ?? post.writer_profiles?.role}
-                      </p>
+                    {post.author_role && (
+                      <p className="text-[12px] text-gray-400">{post.author_role}</p>
                     )}
                   </div>
                 </div>
-                {post.writer_profiles?.bio && (
-                  <p className="text-[13px] text-gray-500 mt-3 leading-relaxed">
-                    {post.writer_profiles.bio}
-                  </p>
-                )}
               </div>
 
-              <NewsletterMiniCard />
+              <BookRideMiniCard />
             </aside>
           </div>
         </div>

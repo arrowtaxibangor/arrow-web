@@ -5,10 +5,14 @@ export const HOMEPAGE_KEYS = [
   'hero_subtext',
   'hero_cta_label',
   'hero_background_image',
+  'banner_heading',
+  'banner_subtext',
+  'banner_image',
   'meta_title',
   'meta_description',
   'og_image_url',
   'phone_number',
+  'areas_html',
 ] as const;
 
 export type HomepageKey = (typeof HOMEPAGE_KEYS)[number];
@@ -28,10 +32,14 @@ export async function getAllHomepageContent(): Promise<HomepageContent> {
     hero_subtext: null,
     hero_cta_label: null,
     hero_background_image: null,
+    banner_heading: null,
+    banner_subtext: null,
+    banner_image: null,
     meta_title: null,
     meta_description: null,
     og_image_url: null,
     phone_number: null,
+    areas_html: null,
   };
 
   for (const row of data ?? []) {

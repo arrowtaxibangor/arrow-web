@@ -1,16 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  LayoutDashboard,
-  FileText,
-  BookOpen,
-  MessageSquare,
-  Users,
-  Settings,
-  LogOut,
-  Home,
-} from 'lucide-react';
+import { LayoutDashboard, FileText, BookOpen, Settings, LogOut, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -18,8 +9,6 @@ const navItems = [
   { href: '/admin/homepage', label: 'Homepage', icon: Home },
   { href: '/admin/pages', label: 'Pages', icon: FileText },
   { href: '/admin/blog', label: 'Blog', icon: BookOpen },
-  { href: '/admin/blog/comments', label: 'Comments', icon: MessageSquare },
-  { href: '/admin/writers', label: 'Writers', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 

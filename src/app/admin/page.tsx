@@ -44,93 +44,41 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              Pending Comment Moderation
-              {stats.pendingCommentsTotal > 0 && (
-                <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-100 text-red-700 text-xs font-bold">
-                  {stats.pendingCommentsTotal}
-                </span>
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.postsWithPendingComments.length === 0 ? (
-              <p className="text-sm text-green-600 font-medium">All clear — no pending comments.</p>
-            ) : (
-              <div className="space-y-0">
-                {stats.postsWithPendingComments.map((item) => (
-                  <div
-                    key={item.post_id}
-                    className="flex items-center justify-between py-2 border-b border-[hsl(var(--border))] last:border-0 gap-2"
-                  >
-                    <span className="text-sm font-medium truncate" title={item.post_title}>
-                      {item.post_title}
-                    </span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-xs text-[hsl(var(--muted-foreground))]">
-                        {item.pending_count} pending
-                      </span>
-                      <Link
-                        href="/admin/blog/comments"
-                        className="text-[#265EA6] text-xs hover:underline"
-                      >
-                        Review →
-                      </Link>
-                    </div>
-                  </div>
-                ))}
-                <Link
-                  href="/admin/blog/comments"
-                  className="text-xs text-[#265EA6] hover:underline mt-2 block"
-                >
-                  Go to moderation queue →
-                </Link>
-              </div>
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            SEO Gaps
+            {stats.pagesWithoutMetaDescription.length > 0 && (
+              <AlertCircle className="h-4 w-4 text-amber-500" />
             )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              SEO Gaps
-              {stats.pagesWithoutMetaDescription.length > 0 && (
-                <AlertCircle className="h-4 w-4 text-amber-500" />
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {stats.pagesWithoutMetaDescription.length === 0 ? (
-              <p className="text-sm text-green-600 font-medium">
-                All pages have meta descriptions.
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {stats.pagesWithoutMetaDescription.length === 0 ? (
+            <p className="text-sm text-green-600 font-medium">All pages have meta descriptions.</p>
+          ) : (
+            <div>
+              <p className="text-xs text-[hsl(var(--muted-foreground))] mb-2">
+                Pages missing meta description:
               </p>
-            ) : (
-              <div>
-                <p className="text-xs text-[hsl(var(--muted-foreground))] mb-2">
-                  Pages missing meta description:
-                </p>
-                {stats.pagesWithoutMetaDescription.map((page) => (
-                  <div
-                    key={page.id}
-                    className="flex items-center justify-between py-2 border-b border-[hsl(var(--border))] last:border-0"
+              {stats.pagesWithoutMetaDescription.map((page) => (
+                <div
+                  key={page.id}
+                  className="flex items-center justify-between py-2 border-b border-[hsl(var(--border))] last:border-0"
+                >
+                  <span className="text-sm font-medium">{page.title}</span>
+                  <Link
+                    href={`/admin/pages/${page.id}`}
+                    className="text-[#265EA6] text-xs hover:underline shrink-0"
                   >
-                    <span className="text-sm font-medium">{page.title}</span>
-                    <Link
-                      href={`/admin/pages/${page.id}`}
-                      className="text-[#265EA6] text-xs hover:underline shrink-0"
-                    >
-                      Fix →
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                    Fix →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader className="pb-3">

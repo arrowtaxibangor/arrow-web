@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import type { BlogPost, WriterProfile } from '@/lib/supabase/blog';
+import type { BlogPost } from '@/lib/supabase/blog';
 import { TiptapEditor } from '@/components/admin/sections/TiptapEditor';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,13 +48,12 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, '');
 }
 
-export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: WriterProfile[] }) {
+export function BlogPostForm({ post }: { post?: BlogPost }) {
   const router = useRouter();
   const isNew = !post;
 
   const [content, setContent] = useState(post?.content ?? '');
   const [category, setCategory] = useState<string>(post?.category ?? '');
-  const [writerId, setWriterId] = useState<string>(post?.writer_profile_id ?? '');
   const [tags, setTags] = useState(post?.tags?.join(', ') ?? '');
   const [slugManual, setSlugManual] = useState(!isNew);
   const [saving, setSaving] = useState(false);
@@ -92,16 +91,6 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
     if (!slugManual && title) setValue('slug', slugify(title));
   }, [title, slugManual, setValue]);
 
-  useEffect(() => {
-    if (writerId) {
-      const w = writers.find((wr) => wr.id === writerId);
-      if (w) {
-        setValue('author', w.name);
-        setValue('author_role', w.role ?? '');
-      }
-    }
-  }, [writerId, writers, setValue]);
-
   const onSubmit = async (data: FormFields) => {
     setSaving(true);
     setError(null);
@@ -116,7 +105,7 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
       cover_image_url: data.cover_image_url || null,
       author: data.author,
       author_role: data.author_role || null,
-      writer_profile_id: writerId || null,
+      writer_profile_id: null,
       category: category || null,
       tags: tags
         ? tags
@@ -325,24 +314,6 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
                 <CardTitle className="text-sm">Author</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {writers.length > 0 && (
-                  <div>
-                    <Label className="text-xs">Writer profile</Label>
-                    <Select value={writerId} onValueChange={setWriterId}>
-                      <SelectTrigger className="mt-1 text-sm">
-                        <SelectValue placeholder="Select writer" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">None</SelectItem>
-                        {writers.map((w) => (
-                          <SelectItem key={w.id} value={w.id}>
-                            {w.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
                 <div>
                   <Label htmlFor="author" className="text-xs">
                     Author name
@@ -447,7 +418,7 @@ export function BlogPostForm({ post, writers }: { post?: BlogPost; writers: Writ
                 <ConfirmDialog
                   open={deleteOpen}
                   title={`Delete "${post!.title}"?`}
-                  description="This will permanently delete the post and all its comments."
+                  description="This will permanently delete the post. This cannot be undone."
                   onConfirm={handleDelete}
                   onCancel={() => setDeleteOpen(false)}
                 />

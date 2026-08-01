@@ -8,8 +8,14 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { ImageField } from '@/components/admin/ui/ImageField';
 import type { HomepageContent } from '@/lib/supabase/homepage';
+import { TiptapEditor } from '@/components/admin/sections/TiptapEditor';
+
+const DEFAULT_AREAS_HTML = `<p>Arrow Taxi Bangor is the new rising star of Gwynedd taxi services. Whether you are looking to book a long distance ride or a local night out, you can book with confidence. We offer nice clean cars and friendly professional drivers.</p><p>If you are a tourist looking to book a taxi for a day/week you are welcome to discuss your plans with the driver and they can then give you our best quote.</p><h2>Popular Areas We Cover:</h2><ul><li>Gwynedd</li><li>Bangor Train Station</li><li>Caernarfon</li><li>Snowdonia National Park</li><li>Beddgelert</li><li>South Stack, Anglesey</li><li>Penmon Lighthouse, Anglesey</li><li>Porthmadog</li><li>Pwllheli</li></ul>`;
 
 const DEFAULTS: HomepageContent = {
+  banner_heading: 'Arrow Taxi Bangor',
+  banner_subtext: `Taxis across Bangor, Caernarfon and Gwynedd — 24/7. Book online or call us.`,
+  banner_image: '/Assets/Images/BannerImg.jpeg',
   hero_heading: "Bangor's Trusted Taxi Service",
   hero_subtext: 'Professional, reliable rides across North Wales — available 24/7.',
   hero_cta_label: 'Book a taxi now',
@@ -19,6 +25,7 @@ const DEFAULTS: HomepageContent = {
     'Call us on 01248209393 to book your taxi. We are based in Bangor, Gwynedd and operate 24/7. Snowdon, Tryfan, Beddgelert, Pwllheli, Caernarfon, Anglesey. To and from all major airports',
   og_image_url: 'https://www.arrow.taxi/Assets/Images/BannerImg.jpeg',
   phone_number: '+441248209393',
+  areas_html: DEFAULT_AREAS_HTML,
 };
 
 export default function HomepageCmsPage() {
@@ -84,12 +91,50 @@ export default function HomepageCmsPage() {
         </div>
       ) : (
         <form onSubmit={handleSave} className="space-y-6 max-w-2xl">
-          {/* Hero */}
+          {/* Banner — full-width hero with taxi car photo */}
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">Hero section</CardTitle>
+              <CardTitle className="text-base">Banner (header image)</CardTitle>
               <CardDescription>
-                Visible text in the wave banner at the top of the page.
+                The full-width hero at the very top of the page with the car photo background.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="banner_heading">Heading</Label>
+                <Input
+                  id="banner_heading"
+                  value={form.banner_heading ?? ''}
+                  onChange={(e) => set('banner_heading', e.target.value)}
+                  placeholder="Arrow Taxi Bangor"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="banner_subtext">Subtext</Label>
+                <Input
+                  id="banner_subtext"
+                  value={form.banner_subtext ?? ''}
+                  onChange={(e) => set('banner_subtext', e.target.value)}
+                  placeholder="Taxis across Bangor, Caernarfon and Gwynedd — 24/7."
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Background image</Label>
+                <ImageField
+                  value={form.banner_image ?? ''}
+                  onChange={(url) => set('banner_image', url)}
+                  label=""
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Wave section — blue gradient panel below the banner */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Wave section</CardTitle>
+              <CardDescription>
+                The blue wave panel below the banner with a second heading and CTA.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -196,6 +241,24 @@ export default function HomepageCmsPage() {
                   E.164 format, e.g. +441248209393
                 </p>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Areas We Cover */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Areas We Cover</CardTitle>
+              <CardDescription>
+                Rich-text block shown below the payment methods on the homepage. Use headings for
+                section titles and bullet lists for area names — lists auto-render in three columns.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <TiptapEditor
+                content={form.areas_html ?? ''}
+                onChange={(html) => set('areas_html', html)}
+                placeholder="Add intro paragraphs, a heading, and a bulleted list of areas…"
+              />
             </CardContent>
           </Card>
 

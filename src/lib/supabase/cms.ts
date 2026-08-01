@@ -91,6 +91,22 @@ export async function updatePage(slug: string, input: Partial<CmsPageInput>): Pr
 }
 
 export async function deletePage(slug: string): Promise<void> {
+  // FK on cms_sections.page_id has no ON DELETE CASCADE, so remove children first
+  // or the page delete fails silently in Supabase.
+  const { data: page, error: findError } = await supabaseAdmin
+    .from('cms_pages')
+    .select('id')
+    .eq('slug', slug)
+    .single();
+  if (findError) {
+    if (findError.code === 'PGRST116') return;
+    throw findError;
+  }
+  const { error: sectionsError } = await supabaseAdmin
+    .from('cms_sections')
+    .delete()
+    .eq('page_id', page.id);
+  if (sectionsError) throw sectionsError;
   const { error } = await supabaseAdmin.from('cms_pages').delete().eq('slug', slug);
   if (error) throw error;
 }

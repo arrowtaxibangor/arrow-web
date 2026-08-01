@@ -7,12 +7,12 @@ import { useQuery } from 'react-query';
 import { getGoogleRating } from '../../../../services/googleRating';
 import { usePathname } from 'next/navigation';
 import { usePageBySlug } from '../../../../Hooks/FetchPageBySlug';
-import Image from 'next/image';
 import Link from 'next/link';
 import { BookingButton } from '../BookingButton/BookingButton';
 import { PHONE_DISPLAY } from '../../../../utils/contact';
 import { useSocialIcons } from '../../../../Hooks/useSocialIcons';
 import { SOCIAL_ICON_META } from '../../../../utils/socialMediaIcons';
+import { useBannerContent } from '../../../../Hooks/useBannerContent';
 
 export const Banner = () => {
   const pathName = usePathname();
@@ -26,6 +26,7 @@ export const Banner = () => {
 
   const { data: DynamicData } = usePageBySlug();
   const socialIcons = useSocialIcons();
+  const { data: cmsData } = useBannerContent();
 
   if (pathName?.startsWith('/blog')) return null;
 
@@ -80,9 +81,24 @@ export const Banner = () => {
 
   const text = getBannerText();
 
-  const backgroundImageUrl = DynamicData?.page?.HeroBg?.url
-    ? encodeURI(buildImageUrl(DynamicData.page.HeroBg.url))
-    : '/Assets/Images/BannerImg.jpeg';
+  const isHomepage = pathName === '/';
+
+  // On the homepage, CMS data takes priority over external backend data.
+  // On other pages, the external backend's DynamicData is used as before.
+  const heading = isHomepage
+    ? cmsData?.banner_heading || DynamicData?.page?.heroHeading || text.heading
+    : DynamicData?.page?.heroHeading || text.heading;
+
+  const paragraph = isHomepage
+    ? cmsData?.banner_subtext || DynamicData?.page?.heroSubheading || text.paragraph
+    : DynamicData?.page?.heroSubheading || text.paragraph;
+
+  const backgroundImageUrl =
+    isHomepage && cmsData?.banner_image
+      ? cmsData.banner_image
+      : DynamicData?.page?.HeroBg?.url
+        ? encodeURI(buildImageUrl(DynamicData.page.HeroBg.url))
+        : '/Assets/Images/BannerImg.jpeg';
 
   // Only render the rating once a real value has loaded. Never substitute a
   // placeholder score — an invented rating is a misleading advertising claim.
@@ -90,24 +106,19 @@ export const Banner = () => {
   const showRating = !isLoading && !isError && rating !== null;
 
   return (
-    <section className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden">
-      <Image
-        src={backgroundImageUrl}
-        alt="Arrow Taxi car on the road in Bangor, North Wales"
-        fill
-        priority
-        sizes="(max-width: 1440px) 100vw, 1440px"
-        className="object-cover"
-      />
+    <section
+      className="relative w-full min-h-[70vh] flex items-center justify-center overflow-hidden bg-center bg-cover"
+      style={{ backgroundImage: `url('${backgroundImageUrl}')` }}
+    >
       <div className="absolute inset-0 bg-black opacity-50" />
 
       <div className="relative z-10 flex w-full flex-col items-center gap-y-5 px-4 py-16 text-center text-white">
         <h1 className="text-[60px] mobile:text-[32px] font-[700] mobile:!leading-[110%] !leading-[90%] text-shadow-lg">
-          {DynamicData?.page?.heroHeading || text.heading}
+          {heading}
         </h1>
 
         <p className="text-[22px] mobile:text-[16px] w-full max-w-[760px] !leading-[145%] !font-medium">
-          {DynamicData?.page?.heroSubheading || text.paragraph}
+          {paragraph}
         </p>
 
         <div className="w-full max-w-[320px] sm:max-w-none pt-1">
@@ -126,13 +137,13 @@ export const Banner = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Arrow Taxi on ${meta.label}`}
-                  className="flex items-center justify-center w-[36px] h-[36px] mobile:w-[32px] mobile:h-[32px] rounded-full transition-colors hover:bg-white/10"
+                  className="flex items-center justify-center w-[44px] h-[44px] mobile:w-[38px] mobile:h-[38px] rounded-full transition-colors hover:bg-white/10"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={meta.src}
                     alt=""
-                    className="w-[22px] h-[22px] mobile:w-[20px] mobile:h-[20px] invert brightness-0"
+                    className="w-[28px] h-[28px] mobile:w-[24px] mobile:h-[24px] invert brightness-0"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
                 </Link>
