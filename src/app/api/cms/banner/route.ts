@@ -10,8 +10,8 @@ export async function GET() {
     const content = await getAllHomepageContent();
     return NextResponse.json(
       {
-        banner_heading: content.banner_heading,
-        banner_subtext: content.banner_subtext,
+        banner_heading: content.banner_heading ?? content.hero_heading,
+        banner_subtext: content.banner_subtext ?? content.hero_subtext,
         banner_image: content.banner_image,
       },
       { headers: NO_CACHE }
