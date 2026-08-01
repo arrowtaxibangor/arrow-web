@@ -14,7 +14,7 @@ async function fetchBannerContent(): Promise<BannerContent> {
 
 export function useBannerContent() {
   return useQuery<BannerContent>(['cms-banner'], fetchBannerContent, {
-    staleTime: 60_000,
+    staleTime: 0,
     retry: false,
   });
 }
