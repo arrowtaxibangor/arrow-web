@@ -8,7 +8,7 @@ import {
   SUPPORTED_SOCIAL_ICONS,
   type SocialIcon,
   type SupportedSocialIcon,
-} from '@/lib/supabase/cms';
+} from '@/lib/social-icons';
 import { SOCIAL_ICON_META } from '../../../../utils/socialMediaIcons';
 import { ArrowDown, ArrowUp, Trash2, Plus } from 'lucide-react';
 

@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './client';
+import { isSupportedIcon, type SocialIcon, type SupportedSocialIcon } from '@/lib/social-icons';
 
 export type SectionType = 'HERO' | 'TEXT' | 'IMAGE' | 'BUTTON' | 'AD_CODE';
 
@@ -133,28 +134,15 @@ export async function setSiteSetting(key: string, value: string): Promise<void> 
   if (error) throw error;
 }
 
-// The fixed set of social icons the admin UI can pick from. Extending this list
-// requires adding the matching SVG under /public/Assets/Icons/<slug>.svg — no
-// new icon dependency is introduced here (existing SVGs are reused).
-export const SUPPORTED_SOCIAL_ICONS = [
-  'facebook',
-  'whatsapp',
-  'instagram',
-  'youtube',
-  'pinterest',
-  'twitter',
-] as const;
-
-export type SupportedSocialIcon = (typeof SUPPORTED_SOCIAL_ICONS)[number];
-
-export type SocialIcon = {
-  icon: SupportedSocialIcon;
-  url: string;
-};
-
-function isSupportedIcon(value: unknown): value is SupportedSocialIcon {
-  return typeof value === 'string' && (SUPPORTED_SOCIAL_ICONS as readonly string[]).includes(value);
-}
+// Icon slug list and types live in `@/lib/social-icons` so client components
+// can import them without pulling in `supabaseAdmin`. Re-exported here for
+// existing server-side callers.
+export {
+  SUPPORTED_SOCIAL_ICONS,
+  isSupportedIcon,
+  type SupportedSocialIcon,
+  type SocialIcon,
+} from '@/lib/social-icons';
 
 function parseSocialIcons(raw: string | null): SocialIcon[] {
   if (!raw) return [];
