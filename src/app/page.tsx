@@ -6,6 +6,8 @@ import { getAllHomepageContent } from '@/lib/supabase/homepage';
 import { type Metadata } from 'next';
 import React from 'react';
 
+export const revalidate = 0;
+
 const FALLBACK = {
   hero_heading: "Bangor's Trusted Taxi Service",
   hero_subtext: 'Professional, reliable rides across North Wales — available 24/7.',

@@ -113,11 +113,7 @@ export function BookingSidebarCard() {
             href={PHONE_HREF}
             className="flex items-center gap-1.5 text-[13px] font-semibold text-gray-700"
           >
-            <svg
-              className="w-3.5 h-3.5 text-primary_color"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-3.5 h-3.5 text-primary_color" fill="currentColor" viewBox="0 0 24 24">
               <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24 11.47 11.47 0 003.58.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.47 11.47 0 00.57 3.58 1 1 0 01-.25 1.02l-2.2 2.19z" />
             </svg>
             {PHONE_DISPLAY}
