@@ -7,12 +7,22 @@ import { getSiteSetting, getSocialIcons } from '@/lib/supabase/cms';
 // instead. Server components keep calling getSiteSetting() directly.
 export async function GET() {
   try {
-    const [bookingUrl, socialIcons] = await Promise.all([
+    const [bookingUrl, socialIcons, ctaBgColor, ctaTextColor, ctaFontSizeRaw] = await Promise.all([
       getSiteSetting('booking_url'),
       getSocialIcons(),
+      getSiteSetting('cta_bg_color'),
+      getSiteSetting('cta_text_color'),
+      getSiteSetting('cta_font_size'),
     ]);
+    const ctaFontSize = ctaFontSizeRaw ? parseInt(ctaFontSizeRaw, 10) : 18;
     return NextResponse.json(
-      { bookingUrl: bookingUrl ?? '', socialIcons },
+      {
+        bookingUrl: bookingUrl ?? '',
+        socialIcons,
+        ctaBgColor: ctaBgColor ?? '#FEC601',
+        ctaTextColor: ctaTextColor ?? '#ffffff',
+        ctaFontSize: Number.isFinite(ctaFontSize) ? ctaFontSize : 18,
+      },
       { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600' } }
     );
   } catch (error) {

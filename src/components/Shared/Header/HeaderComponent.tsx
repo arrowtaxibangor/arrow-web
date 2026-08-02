@@ -93,7 +93,7 @@ export const HeaderComponent = () => {
         <Link
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-          className="text-primary_color w-fit text-[30px] whitespace-nowrap font-[600] hidden sm:flex items-center gap-x-[10px]"
+          className="text-primary_color w-fit text-[36px] whitespace-nowrap font-[600] hidden sm:flex items-center gap-x-[10px]"
         >
           <Image src={'/Assets/Icons/phone.svg'} alt="" preview={false} height={30} width={30} />
           {PHONE_DISPLAY}

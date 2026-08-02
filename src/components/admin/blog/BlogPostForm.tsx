@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye } from 'lucide-react';
 import type { BlogPost } from '@/lib/supabase/blog';
 import { TiptapEditor } from '@/components/admin/sections/TiptapEditor';
 import { Input } from '@/components/ui/input';
@@ -404,6 +404,20 @@ export function BlogPostForm({ post }: { post?: BlogPost }) {
             >
               {saving ? 'Saving…' : isNew ? 'Create Post' : 'Save Changes'}
             </Button>
+
+            {!isNew && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() =>
+                  window.open(`https://www.arrow.taxi/blog/${post!.slug}`, '_blank', 'noopener')
+                }
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Preview post
+              </Button>
+            )}
 
             {!isNew && (
               <>

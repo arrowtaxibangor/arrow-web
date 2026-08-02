@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { SeoAssist } from '@/components/admin/ai/SeoAssist';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye } from 'lucide-react';
 
 type MetaFields = {
   title: string;
@@ -363,6 +363,20 @@ export function PageEditForm({ page }: { page?: CmsPage }) {
             >
               {saving ? 'Saving…' : isNew ? 'Create Page' : 'Save Changes'}
             </Button>
+
+            {!isNew && (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() =>
+                  window.open(`https://www.arrow.taxi/${page!.slug}`, '_blank', 'noopener')
+                }
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Preview page
+              </Button>
+            )}
           </div>
         </div>
       </form>

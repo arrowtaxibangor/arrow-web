@@ -24,11 +24,11 @@ export const MobileCtaBar = () => {
         <Link
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-          className="flex min-h-[52px] flex-1 items-center justify-center rounded-full border-2 border-primary_color bg-white px-4 text-[16px] font-bold text-primary_color"
+          className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl border-2 border-primary_color bg-white px-4 text-[18px] font-bold text-primary_color"
         >
           Call us
         </Link>
-        <BookingButton label="Book now" size="compact" />
+        <BookingButton label="Book Online" size="compact" />
       </div>
     </>
   );

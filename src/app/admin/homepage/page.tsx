@@ -18,7 +18,7 @@ const DEFAULTS: HomepageContent = {
   banner_image: '/Assets/Images/BannerImg.jpeg',
   hero_heading: "Bangor's Trusted Taxi Service",
   hero_subtext: 'Professional, reliable rides across North Wales — available 24/7.',
-  hero_cta_label: 'Book a taxi now',
+  hero_cta_label: 'Book Online',
   hero_background_image: '/Assets/Images/homeBgWave.png',
   meta_title: 'Bangor Taxi - Top Rated North Wales Taxi Service',
   meta_description:
@@ -162,7 +162,7 @@ export default function HomepageCmsPage() {
                   id="hero_cta_label"
                   value={form.hero_cta_label ?? ''}
                   onChange={(e) => set('hero_cta_label', e.target.value)}
-                  placeholder="Book a taxi now"
+                  placeholder="Book Online"
                 />
               </div>
               <div className="space-y-1.5">

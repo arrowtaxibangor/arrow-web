@@ -12,7 +12,7 @@ export const revalidate = 60;
 const FALLBACK = {
   hero_heading: "Bangor's Trusted Taxi Service",
   hero_subtext: 'Professional, reliable rides across North Wales — available 24/7.',
-  hero_cta_label: 'Book a taxi now',
+  hero_cta_label: 'Book Online',
   hero_background_image: '/Assets/Images/homeBgWave.png',
   meta_title: 'Bangor Taxi - Top Rated North Wales Taxi Service',
   meta_description:

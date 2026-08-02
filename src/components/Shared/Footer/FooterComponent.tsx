@@ -19,7 +19,7 @@ import { BookingButton } from '../BookingButton/BookingButton';
 
 // 44px min height keeps every footer link a valid touch target on phones.
 const linkClass =
-  'flex items-center min-h-[44px] hover:underline font-[400] text-[16px] leading-[22px]';
+  'flex items-center min-h-[44px] hover:underline font-[400] text-[16px] leading-[22px] text-white';
 
 export const FooterComponent = () => {
   const { data, isLoading } = usePagesLink();
@@ -51,7 +51,7 @@ export const FooterComponent = () => {
 
       <Row className="bg-primary_color text-white p-[72px] tabletlg:p-[40px] mobile:p-[24px] h-full gap-y-[30px]">
         {/* Brand + booking CTA */}
-        <Col className="flex flex-col gap-[20px]" xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
+        <Col className="flex flex-col gap-[32px]" xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
           <Image
             src="/Assets/Images/logoFooter.svg"
             alt="Arrow Taxi Bangor"
@@ -77,9 +77,9 @@ export const FooterComponent = () => {
                   rel="noopener noreferrer"
                   key={`${item.icon}-${index}`}
                   aria-label={`Arrow Taxi on ${meta.label}`}
-                  className="flex items-center justify-center w-[44px] h-[44px] rounded-full transition-colors hover:bg-white/10"
+                  className="flex items-center justify-center w-[52px] h-[52px] rounded-full transition-colors hover:bg-white/10"
                 >
-                  <Image src={meta.src} width={24} height={24} alt="" preview={false} />
+                  <Image src={meta.src} width={30} height={30} alt="" preview={false} />
                 </Link>
               );
             })}
@@ -87,7 +87,7 @@ export const FooterComponent = () => {
         </Col>
 
         {/* Pages */}
-        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={24} sm={24} xs={24}>
+        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={12} sm={12} xs={12}>
           <h2 className="text-[16px] font-[600] pb-[6px]">Pages</h2>
           {NavItems.map((item) => (
             <Link key={item.href} href={item.href} className={linkClass}>
@@ -102,7 +102,7 @@ export const FooterComponent = () => {
         </Col>
 
         {/* Contact */}
-        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={24} sm={24} xs={24}>
+        <Col className="flex flex-col" xxl={7} xl={7} lg={7} md={12} sm={12} xs={12}>
           <h2 className="text-[16px] font-[600] pb-[6px]">Contact</h2>
           <Link
             href={PHONE_HREF}

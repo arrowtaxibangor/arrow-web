@@ -137,13 +137,13 @@ export const Banner = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Arrow Taxi on ${meta.label}`}
-                  className="flex items-center justify-center w-[44px] h-[44px] mobile:w-[38px] mobile:h-[38px] rounded-full transition-colors hover:bg-white/10"
+                  className="flex items-center justify-center w-[52px] h-[52px] mobile:w-[44px] mobile:h-[44px] rounded-full transition-colors hover:bg-white/10"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={meta.src}
                     alt=""
-                    className="w-[28px] h-[28px] mobile:w-[24px] mobile:h-[24px] invert brightness-0"
+                    className="w-[34px] h-[34px] mobile:w-[28px] mobile:h-[28px] invert brightness-0"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
                 </Link>

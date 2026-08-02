@@ -48,11 +48,25 @@ function parseIconPayload(value: unknown): SocialIcon[] | null {
 }
 
 export async function GET() {
-  const [booking_url, social_icons] = await Promise.all([
-    getSiteSetting('booking_url'),
-    getSocialIcons(),
-  ]);
-  return NextResponse.json({ booking_url: booking_url ?? '', social_icons }, { headers: NO_CACHE });
+  const [booking_url, social_icons, cta_bg_color, cta_text_color, cta_font_size_raw] =
+    await Promise.all([
+      getSiteSetting('booking_url'),
+      getSocialIcons(),
+      getSiteSetting('cta_bg_color'),
+      getSiteSetting('cta_text_color'),
+      getSiteSetting('cta_font_size'),
+    ]);
+  const cta_font_size = cta_font_size_raw ? parseInt(cta_font_size_raw, 10) : 18;
+  return NextResponse.json(
+    {
+      booking_url: booking_url ?? '',
+      social_icons,
+      cta_bg_color: cta_bg_color ?? '#FEC601',
+      cta_text_color: cta_text_color ?? '#ffffff',
+      cta_font_size: Number.isFinite(cta_font_size) ? cta_font_size : 18,
+    },
+    { headers: NO_CACHE }
+  );
 }
 
 export async function PUT(req: NextRequest) {
@@ -76,6 +90,43 @@ export async function PUT(req: NextRequest) {
         );
       }
       await setSocialIcons(icons);
+    }
+
+    if ('cta_bg_color' in body) {
+      if (
+        typeof body.cta_bg_color !== 'string' ||
+        !/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(body.cta_bg_color)
+      ) {
+        return NextResponse.json(
+          { error: 'cta_bg_color must be a valid hex colour' },
+          { status: 400 }
+        );
+      }
+      await setSiteSetting('cta_bg_color', body.cta_bg_color);
+    }
+
+    if ('cta_text_color' in body) {
+      if (
+        typeof body.cta_text_color !== 'string' ||
+        !/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(body.cta_text_color)
+      ) {
+        return NextResponse.json(
+          { error: 'cta_text_color must be a valid hex colour' },
+          { status: 400 }
+        );
+      }
+      await setSiteSetting('cta_text_color', body.cta_text_color);
+    }
+
+    if ('cta_font_size' in body) {
+      const size = Number(body.cta_font_size);
+      if (!Number.isInteger(size) || size < 10 || size > 32) {
+        return NextResponse.json(
+          { error: 'cta_font_size must be an integer between 10 and 32' },
+          { status: 400 }
+        );
+      }
+      await setSiteSetting('cta_font_size', String(size));
     }
 
     return NextResponse.json({ ok: true }, { headers: NO_CACHE });
