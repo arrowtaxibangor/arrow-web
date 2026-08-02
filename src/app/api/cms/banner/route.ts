@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
+import { unstable_noStore as noStore } from 'next/cache';
 import { getAllHomepageContent } from '@/lib/supabase/homepage';
 
 export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
 
 const NO_CACHE = { 'Cache-Control': 'no-store, no-cache, must-revalidate' };
 
 export async function GET() {
+  noStore();
   try {
     const content = await getAllHomepageContent();
     return NextResponse.json(
