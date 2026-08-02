@@ -32,6 +32,10 @@ const ReviewCard = ({ review }: { review: any }) => {
             <img
               src={review?.profilePhoto}
               alt={`${review?.name} on Google Reviews`}
+              width={56}
+              height={56}
+              loading="lazy"
+              decoding="async"
               className="h-[56px] w-[56px] mobilelg:h-[48px] mobilelg:w-[48px] rounded-full object-cover"
               onError={(e) => {
                 (e.target as HTMLImageElement).src = '/Assets/Icons/dummyProfileImage.png';

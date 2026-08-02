@@ -21,7 +21,15 @@ export function PostCover({ imageUrl, category, alt = '', minHeight }: PostCover
       <div className="relative w-full h-full overflow-hidden" style={{ minHeight }}>
         {imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={imageUrl} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={imageUrl}
+            alt={alt}
+            width={1200}
+            height={675}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0" style={{ background: gradient }} />
         )}

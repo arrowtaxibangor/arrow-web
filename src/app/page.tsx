@@ -6,7 +6,7 @@ import { getAllHomepageContent } from '@/lib/supabase/homepage';
 import { type Metadata } from 'next';
 import React from 'react';
 
-export const revalidate = 0;
+export const revalidate = 60;
 
 const FALLBACK = {
   hero_heading: "Bangor's Trusted Taxi Service",
