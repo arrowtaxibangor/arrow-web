@@ -4,6 +4,7 @@ import { BookingButton } from '@/components/Shared/BookingButton/BookingButton';
 import { fetchPlaceDetails, type PlaceReview } from '@/lib/googlePlaces';
 import { getAllHomepageContent } from '@/lib/supabase/homepage';
 import { type Metadata } from 'next';
+import Image from 'next/image';
 import React from 'react';
 
 export const revalidate = 60;
@@ -130,12 +131,14 @@ export default async function Home() {
           full-bleed, while `relative` keeps the absolute background anchored
           here rather than to an ancestor further up the tree. */}
       <div className="relative -mx-16 mobile:-mx-6 flex items-center justify-center py-20 mobile:py-14 min-h-[60vh] w-auto">
-        <div
-          className="absolute inset-0 h-full w-full bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('${heroBg}')`,
-            backgroundSize: '100% 100%',
-          }}
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          sizes="(max-width: 1440px) 100vw, 1440px"
+          style={{ objectFit: 'fill' }}
+          className="pointer-events-none select-none"
         />
         <div className="relative z-10 flex w-full flex-col items-center gap-6 px-4">
           {/* h2, not h1 — the Banner above already provides this page's single h1. */}
