@@ -1,8 +1,8 @@
 'use client';
 import Link from 'next/link';
 import React from 'react';
-import { useBookingUrl } from '../../../../Hooks/useBookingUrl';
 import { PHONE_DISPLAY, PHONE_HREF } from '../../../../utils/contact';
+import { BookingButton } from '../BookingButton/BookingButton';
 
 /**
  * Sticky call/book bar pinned to the bottom of the viewport on phones.
@@ -15,8 +15,6 @@ import { PHONE_DISPLAY, PHONE_HREF } from '../../../../utils/contact';
  * footer's last row.
  */
 export const MobileCtaBar = () => {
-  const { data: bookingUrl } = useBookingUrl();
-
   return (
     <>
       {/* Spacer: reserves the bar's height in normal flow. */}
@@ -26,18 +24,11 @@ export const MobileCtaBar = () => {
         <Link
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-          className="flex min-h-[52px] flex-1 items-center justify-center rounded-full border-2 border-primary_color bg-white px-4 text-[16px] font-bold text-primary_color transition-colors hover:bg-primary_color hover:text-white"
+          className="flex min-h-[52px] flex-1 items-center justify-center rounded-full border-2 border-primary_color bg-white px-4 text-[16px] font-bold text-primary_color"
         >
           Call us
         </Link>
-        <Link
-          href={bookingUrl || '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-[#FEC601] px-4 text-[16px] font-bold text-white"
-        >
-          Book now
-        </Link>
+        <BookingButton label="Book now" size="compact" />
       </div>
     </>
   );
