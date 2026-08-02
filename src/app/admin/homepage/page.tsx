@@ -6,9 +6,21 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Eye } from 'lucide-react';
 import { ImageField } from '@/components/admin/ui/ImageField';
 import type { HomepageContent } from '@/lib/supabase/homepage';
 import { TiptapEditor } from '@/components/admin/sections/TiptapEditor';
+
+async function openHomepagePreview(fields: HomepageContent) {
+  const res = await fetch('/api/admin/preview/draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: { type: 'homepage', fields }, slug: null }),
+  });
+  if (!res.ok) return;
+  const { token } = (await res.json()) as { token: string };
+  window.open(`/preview/homepage?token=${token}`, '_blank', 'noopener');
+}
 
 const DEFAULT_AREAS_HTML = `<p>Arrow Taxi Bangor is the new rising star of Gwynedd taxi services. Whether you are looking to book a long distance ride or a local night out, you can book with confidence. We offer nice clean cars and friendly professional drivers.</p><p>If you are a tourist looking to book a taxi for a day/week you are welcome to discuss your plans with the driver and they can then give you our best quote.</p><h2>Popular Areas We Cover:</h2><ul><li>Gwynedd</li><li>Bangor Train Station</li><li>Caernarfon</li><li>Snowdonia National Park</li><li>Beddgelert</li><li>South Stack, Anglesey</li><li>Penmon Lighthouse, Anglesey</li><li>Porthmadog</li><li>Pwllheli</li></ul>`;
 
@@ -274,13 +286,19 @@ export default function HomepageCmsPage() {
             </p>
           )}
 
-          <Button
-            type="submit"
-            className="bg-[#265EA6] hover:bg-[#1e4e8c] text-white"
-            disabled={saving}
-          >
-            {saving ? 'Saving…' : 'Save homepage content'}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              type="submit"
+              className="bg-[#265EA6] hover:bg-[#1e4e8c] text-white"
+              disabled={saving}
+            >
+              {saving ? 'Saving…' : 'Save homepage content'}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => void openHomepagePreview(form)}>
+              <Eye className="h-4 w-4 mr-2" />
+              Preview draft
+            </Button>
+          </div>
         </form>
       )}
     </div>

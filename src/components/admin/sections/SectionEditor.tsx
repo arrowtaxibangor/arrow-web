@@ -3,16 +3,18 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SectionCard } from './SectionCard';
-import type { CmsSectionInput } from '@/lib/supabase/cms';
+import type { CmsSectionInput, ButtonVariant } from '@/lib/supabase/cms';
+import { SECTION_REGISTRY } from '@/lib/component-registry';
 
 type SectionType = 'TEXT' | 'IMAGE' | 'BUTTON' | 'AD_CODE' | 'HERO';
 
 interface SectionEditorProps {
   sections: CmsSectionInput[];
   onChange: (sections: CmsSectionInput[]) => void;
+  buttonVariants?: ButtonVariant[];
 }
 
-const SECTION_TYPES: SectionType[] = ['TEXT', 'IMAGE', 'BUTTON', 'AD_CODE', 'HERO'];
+const SECTION_TYPES: SectionType[] = SECTION_REGISTRY.map((s) => s.type) as SectionType[];
 
 function emptySection(type: SectionType): CmsSectionInput {
   return {
@@ -24,10 +26,11 @@ function emptySection(type: SectionType): CmsSectionInput {
     button_text: null,
     button_link: null,
     html: null,
+    button_variant_slug: null,
   };
 }
 
-export function SectionEditor({ sections, onChange }: SectionEditorProps) {
+export function SectionEditor({ sections, onChange, buttonVariants = [] }: SectionEditorProps) {
   function onDragEnd(result: DropResult) {
     if (!result.destination) return;
     const reordered = [...sections];
@@ -65,6 +68,7 @@ export function SectionEditor({ sections, onChange }: SectionEditorProps) {
                       isDragging={snapshot.isDragging}
                       onChange={(updated) => updateSection(index, updated)}
                       onDelete={() => deleteSection(index)}
+                      buttonVariants={buttonVariants}
                     />
                   )}
                 </Draggable>

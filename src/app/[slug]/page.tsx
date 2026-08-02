@@ -1,6 +1,11 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getPageBySlug, getSiteSetting, listPublishedPages } from '@/lib/supabase/cms';
+import {
+  getPageBySlug,
+  getSiteSetting,
+  listPublishedPages,
+  getButtonVariants,
+} from '@/lib/supabase/cms';
 import CmsPageRenderer from '@/components/CmsPageRenderer/CmsPageRenderer';
 import PaymentMethods from '@/components/Shared/PaymentMethods/PaymentMethods';
 
@@ -43,15 +48,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  const [page, bookingUrl] = await Promise.all([
+  const [page, bookingUrl, buttonVariants] = await Promise.all([
     getPageBySlug(params.slug),
     getSiteSetting('booking_url'),
+    getButtonVariants(),
   ]);
   if (!page?.is_published) notFound();
 
   return (
     <div className="w-full flex flex-col justify-center items-center">
-      <CmsPageRenderer page={page} bookingUrl={bookingUrl ?? '#'} />
+      <CmsPageRenderer page={page} bookingUrl={bookingUrl ?? '#'} buttonVariants={buttonVariants} />
       <PaymentMethods />
     </div>
   );

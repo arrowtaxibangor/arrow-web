@@ -5,6 +5,20 @@ import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { ArrowLeft, Eye } from 'lucide-react';
 import type { BlogPost } from '@/lib/supabase/blog';
+
+async function openBlogPreview(slug: string | null, fields: Record<string, unknown>) {
+  const res = await fetch('/api/admin/preview/draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      content: { type: 'blog', fields },
+      slug: slug ?? '__new__',
+    }),
+  });
+  if (!res.ok) return;
+  const { token } = (await res.json()) as { token: string };
+  window.open(`/preview/blog/${slug ?? '__new__'}?token=${token}`, '_blank', 'noopener');
+}
 import { TiptapEditor } from '@/components/admin/sections/TiptapEditor';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -405,19 +419,42 @@ export function BlogPostForm({ post }: { post?: BlogPost }) {
               {saving ? 'Saving…' : isNew ? 'Create Post' : 'Save Changes'}
             </Button>
 
-            {!isNew && (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() =>
-                  window.open(`https://www.arrow.taxi/blog/${post!.slug}`, '_blank', 'noopener')
-                }
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Preview post
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                const fields = {
+                  title: watch('title'),
+                  h1: watch('h1') || null,
+                  slug: watch('slug'),
+                  excerpt: watch('excerpt') || null,
+                  content: content || null,
+                  cover_image_url: watch('cover_image_url') || null,
+                  author: watch('author'),
+                  author_role: watch('author_role') || null,
+                  category: category || null,
+                  tags: tags
+                    ? tags
+                        .split(',')
+                        .map((t) => t.trim())
+                        .filter(Boolean)
+                    : null,
+                  reading_time_minutes:
+                    watch('reading_time_minutes') !== ''
+                      ? Number(watch('reading_time_minutes'))
+                      : null,
+                  meta_title: watch('meta_title') || null,
+                  meta_description: watch('meta_description') || null,
+                  published: watch('published'),
+                  featured: watch('featured'),
+                };
+                void openBlogPreview(isNew ? null : post!.slug, fields);
+              }}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Preview draft
+            </Button>
 
             {!isNew && (
               <>

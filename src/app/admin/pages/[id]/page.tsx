@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
-import { getPageById } from '@/lib/supabase/cms';
+import { getPageById, getButtonVariants } from '@/lib/supabase/cms';
 import { PageEditForm } from '@/components/admin/pages/PageEditForm';
 
 export default async function EditPagePage({ params }: { params: { id: string } }) {
-  const page = await getPageById(params.id);
+  const [page, buttonVariants] = await Promise.all([getPageById(params.id), getButtonVariants()]);
   if (!page) notFound();
-  return <PageEditForm page={page} />;
+  return <PageEditForm page={page} buttonVariants={buttonVariants} />;
 }

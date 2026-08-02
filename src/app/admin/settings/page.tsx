@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Trash2, Plus } from 'lucide-react';
 import { SocialIconsField } from '@/components/admin/settings/SocialIconsField';
-import type { SocialIcon } from '@/lib/supabase/cms';
+import type { SocialIcon, ButtonVariant } from '@/lib/supabase/cms';
 
 const FONT_SIZE_OPTIONS = [14, 16, 18, 20] as const;
 type FontSizeOption = (typeof FONT_SIZE_OPTIONS)[number];
@@ -33,10 +34,24 @@ export default function SettingsPage() {
     message: string;
   } | null>(null);
 
+  // Button variants
+  const [variants, setVariants] = useState<ButtonVariant[]>([]);
+  const [variantSaving, setVariantSaving] = useState<string | null>(null);
+  const [variantFeedback, setVariantFeedback] = useState<{
+    slug: string;
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
+  const [newSlug, setNewSlug] = useState('');
+  const [newLabel, setNewLabel] = useState('');
+  const [addingVariant, setAddingVariant] = useState(false);
+
   useEffect(() => {
-    fetch('/api/admin/settings')
-      .then((r) => r.json())
-      .then((d) => {
+    Promise.all([
+      fetch('/api/admin/settings').then((r) => r.json()),
+      fetch('/api/admin/button-variants').then((r) => r.json()),
+    ])
+      .then(([d, bv]) => {
         setBookingUrl(d.booking_url ?? '');
         setSocialIcons(Array.isArray(d.social_icons) ? d.social_icons : []);
         if (d.cta_bg_color) setCtaBgColor(d.cta_bg_color);
@@ -44,9 +59,75 @@ export default function SettingsPage() {
         if (d.cta_font_size && FONT_SIZE_OPTIONS.includes(d.cta_font_size as FontSizeOption)) {
           setCtaFontSize(d.cta_font_size as FontSizeOption);
         }
+        if (Array.isArray(bv.variants)) setVariants(bv.variants as ButtonVariant[]);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  function updateVariantField<K extends keyof ButtonVariant>(
+    slug: string,
+    key: K,
+    value: ButtonVariant[K]
+  ) {
+    setVariants((prev) => prev.map((v) => (v.slug === slug ? { ...v, [key]: value } : v)));
+  }
+
+  async function saveVariant(slug: string) {
+    const variant = variants.find((v) => v.slug === slug);
+    if (!variant) return;
+    setVariantSaving(slug);
+    setVariantFeedback(null);
+    try {
+      const res = await fetch(`/api/admin/button-variants/${slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          label: variant.label,
+          bg_color: variant.bg_color,
+          text_color: variant.text_color,
+          font_size: variant.font_size,
+          border_radius: variant.border_radius,
+          padding_x: variant.padding_x,
+          padding_y: variant.padding_y,
+          font_weight: variant.font_weight,
+          is_default: variant.is_default,
+        }),
+      });
+      if (!res.ok) throw new Error('Save failed');
+      setVariantFeedback({ slug, type: 'success', message: 'Saved.' });
+    } catch {
+      setVariantFeedback({ slug, type: 'error', message: 'Failed to save.' });
+    } finally {
+      setVariantSaving(null);
+    }
+  }
+
+  async function deleteVariant(slug: string) {
+    if (!confirm(`Delete variant "${slug}"? This cannot be undone.`)) return;
+    await fetch(`/api/admin/button-variants/${slug}`, { method: 'DELETE' });
+    setVariants((prev) => prev.filter((v) => v.slug !== slug));
+  }
+
+  async function addVariant() {
+    if (!newSlug.trim() || !newLabel.trim()) return;
+    setAddingVariant(true);
+    try {
+      const res = await fetch('/api/admin/button-variants', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: newSlug.trim(), label: newLabel.trim() }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      const { variant } = (await res.json()) as { variant: ButtonVariant };
+      setVariants((prev) => [...prev, variant]);
+      setNewSlug('');
+      setNewLabel('');
+    } catch {
+      alert('Failed to add variant.');
+    } finally {
+      setAddingVariant(false);
+    }
+  }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -272,6 +353,258 @@ export default function SettingsPage() {
       ) : (
         <SocialIconsField initial={socialIcons} />
       )}
+
+      <Card className="max-w-2xl">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Button Variants</CardTitle>
+          <CardDescription>
+            Named button styles used by CMS page sections. Changes take effect immediately across
+            all pages that reference each variant.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {loading ? (
+            <div className="space-y-3">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="h-24 bg-[hsl(var(--muted))] animate-pulse rounded-md" />
+              ))}
+            </div>
+          ) : (
+            <>
+              {variants.length === 0 && (
+                <p className="text-sm text-[hsl(var(--muted-foreground))]">
+                  No variants yet. Add one below.
+                </p>
+              )}
+
+              {variants.map((v) => (
+                <div
+                  key={v.slug}
+                  className="border border-[hsl(var(--border))] rounded-lg p-4 space-y-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">{v.label}</span>
+                      <span className="text-xs text-[hsl(var(--muted-foreground))] font-mono">
+                        {v.slug}
+                      </span>
+                      {v.is_default && (
+                        <span className="text-xs bg-[hsl(var(--muted))] px-1.5 py-0.5 rounded">
+                          default
+                        </span>
+                      )}
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => void deleteVariant(v.slug)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Label</Label>
+                      <Input
+                        value={v.label}
+                        onChange={(e) => updateVariantField(v.slug, 'label', e.target.value)}
+                        className="text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Font weight</Label>
+                      <Input
+                        type="number"
+                        value={v.font_weight ?? 700}
+                        onChange={(e) =>
+                          updateVariantField(v.slug, 'font_weight', Number(e.target.value))
+                        }
+                        className="text-sm"
+                        placeholder="700"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Background colour</Label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={
+                            isValidHex(v.bg_color ?? '') ? (v.bg_color ?? '#FEC601') : '#FEC601'
+                          }
+                          onChange={(e) => updateVariantField(v.slug, 'bg_color', e.target.value)}
+                          className="h-8 w-10 cursor-pointer rounded border border-[hsl(var(--border))] p-0.5 shrink-0"
+                        />
+                        <Input
+                          value={v.bg_color ?? ''}
+                          onChange={(e) => updateVariantField(v.slug, 'bg_color', e.target.value)}
+                          className="font-mono text-sm"
+                          placeholder="#FEC601"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Text colour</Label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="color"
+                          value={
+                            isValidHex(v.text_color ?? '') ? (v.text_color ?? '#ffffff') : '#ffffff'
+                          }
+                          onChange={(e) => updateVariantField(v.slug, 'text_color', e.target.value)}
+                          className="h-8 w-10 cursor-pointer rounded border border-[hsl(var(--border))] p-0.5 shrink-0"
+                        />
+                        <Input
+                          value={v.text_color ?? ''}
+                          onChange={(e) => updateVariantField(v.slug, 'text_color', e.target.value)}
+                          className="font-mono text-sm"
+                          placeholder="#ffffff"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Font size (px)</Label>
+                      <Input
+                        type="number"
+                        value={v.font_size ?? 18}
+                        onChange={(e) =>
+                          updateVariantField(v.slug, 'font_size', Number(e.target.value))
+                        }
+                        className="text-sm"
+                        placeholder="18"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Border radius (px)</Label>
+                      <Input
+                        type="number"
+                        value={v.border_radius ?? 12}
+                        onChange={(e) =>
+                          updateVariantField(v.slug, 'border_radius', Number(e.target.value))
+                        }
+                        className="text-sm"
+                        placeholder="12"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Padding X (px)</Label>
+                      <Input
+                        type="number"
+                        value={v.padding_x ?? 36}
+                        onChange={(e) =>
+                          updateVariantField(v.slug, 'padding_x', Number(e.target.value))
+                        }
+                        className="text-sm"
+                        placeholder="36"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs">Padding Y (px)</Label>
+                      <Input
+                        type="number"
+                        value={v.padding_y ?? 14}
+                        onChange={(e) =>
+                          updateVariantField(v.slug, 'padding_y', Number(e.target.value))
+                        }
+                        className="text-sm"
+                        placeholder="14"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Live preview</Label>
+                    <div className="flex items-center justify-center rounded-md bg-[hsl(var(--muted))] py-5">
+                      <span
+                        style={{
+                          backgroundColor: isValidHex(v.bg_color ?? '')
+                            ? (v.bg_color ?? '#FEC601')
+                            : '#FEC601',
+                          color: isValidHex(v.text_color ?? '')
+                            ? (v.text_color ?? '#ffffff')
+                            : '#ffffff',
+                          fontSize: v.font_size ?? 18,
+                          padding: `${v.padding_y ?? 14}px ${v.padding_x ?? 36}px`,
+                          borderRadius: v.border_radius ?? 12,
+                          fontWeight: v.font_weight ?? 700,
+                          display: 'inline-block',
+                          fontFamily: 'inherit',
+                        }}
+                      >
+                        Book Online
+                      </span>
+                    </div>
+                  </div>
+
+                  {variantFeedback?.slug === v.slug && (
+                    <p
+                      className={`text-sm px-3 py-2 rounded-md ${
+                        variantFeedback.type === 'success'
+                          ? 'text-green-700 bg-green-50'
+                          : 'text-red-600 bg-red-50'
+                      }`}
+                    >
+                      {variantFeedback.message}
+                    </p>
+                  )}
+
+                  <Button
+                    type="button"
+                    onClick={() => void saveVariant(v.slug)}
+                    className="bg-[#265EA6] hover:bg-[#1e4e8c] text-white"
+                    disabled={variantSaving === v.slug}
+                    size="sm"
+                  >
+                    {variantSaving === v.slug ? 'Saving…' : 'Save variant'}
+                  </Button>
+                </div>
+              ))}
+
+              <div className="border border-dashed border-[hsl(var(--border))] rounded-lg p-4 space-y-3">
+                <p className="text-sm font-medium">Add new variant</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Slug</Label>
+                    <Input
+                      value={newSlug}
+                      onChange={(e) => setNewSlug(e.target.value)}
+                      className="font-mono text-sm"
+                      placeholder="e.g. secondary-blue"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Label</Label>
+                    <Input
+                      value={newLabel}
+                      onChange={(e) => setNewLabel(e.target.value)}
+                      className="text-sm"
+                      placeholder="e.g. Secondary Blue"
+                    />
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void addVariant()}
+                  disabled={addingVariant || !newSlug.trim() || !newLabel.trim()}
+                >
+                  <Plus className="h-4 w-4 mr-1.5" />
+                  {addingVariant ? 'Adding…' : 'Add variant'}
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

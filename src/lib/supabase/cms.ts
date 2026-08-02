@@ -3,6 +3,24 @@ import { isSupportedIcon, type SocialIcon, type SupportedSocialIcon } from '@/li
 
 export type SectionType = 'HERO' | 'TEXT' | 'IMAGE' | 'BUTTON' | 'AD_CODE';
 
+export type ButtonVariant = {
+  id: string;
+  slug: string;
+  label: string;
+  bg_color: string;
+  text_color: string;
+  font_size: number;
+  border_radius: number;
+  padding_x: number;
+  padding_y: number;
+  font_weight: number;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ButtonVariantInput = Omit<ButtonVariant, 'id' | 'created_at' | 'updated_at'>;
+
 export type CmsSection = {
   id: string;
   page_id: string;
@@ -13,6 +31,7 @@ export type CmsSection = {
   image_alt: string | null;
   button_text: string | null;
   button_link: string | null;
+  button_variant_slug: string | null;
   html: string | null;
   created_at: string;
 };
@@ -212,6 +231,47 @@ export async function countPages(): Promise<number> {
 }
 
 export const MAX_MAIN_PAGES = 6;
+
+export async function getButtonVariants(): Promise<ButtonVariant[]> {
+  const { data, error } = await supabaseAdmin
+    .from('button_variants')
+    .select('*')
+    .order('created_at');
+  if (error) throw error;
+  return (data ?? []) as ButtonVariant[];
+}
+
+export async function getButtonVariant(slug: string): Promise<ButtonVariant | null> {
+  const { data, error } = await supabaseAdmin
+    .from('button_variants')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+  if (error) {
+    if (error.code === 'PGRST116') return null;
+    throw error;
+  }
+  return data as ButtonVariant;
+}
+
+export async function upsertButtonVariant(
+  slug: string,
+  input: Partial<ButtonVariantInput>
+): Promise<ButtonVariant> {
+  const payload = { slug, ...input };
+  const { data, error } = await supabaseAdmin
+    .from('button_variants')
+    .upsert(payload, { onConflict: 'slug' })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as ButtonVariant;
+}
+
+export async function deleteButtonVariant(slug: string): Promise<void> {
+  const { error } = await supabaseAdmin.from('button_variants').delete().eq('slug', slug);
+  if (error) throw error;
+}
 
 export async function listAllPages(): Promise<CmsPage[]> {
   const { data, error } = await supabaseAdmin

@@ -1,12 +1,12 @@
 import Link from 'next/link';
-import { countPages, MAX_MAIN_PAGES } from '@/lib/supabase/cms';
+import { countPages, MAX_MAIN_PAGES, getButtonVariants } from '@/lib/supabase/cms';
 import { PageEditForm } from '@/components/admin/pages/PageEditForm';
 import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
 export default async function NewPagePage() {
-  const existing = await countPages();
+  const [existing, buttonVariants] = await Promise.all([countPages(), getButtonVariants()]);
   const atCap = existing >= MAX_MAIN_PAGES;
 
   if (atCap) {
@@ -35,5 +35,5 @@ export default async function NewPagePage() {
     );
   }
 
-  return <PageEditForm />;
+  return <PageEditForm buttonVariants={buttonVariants} />;
 }

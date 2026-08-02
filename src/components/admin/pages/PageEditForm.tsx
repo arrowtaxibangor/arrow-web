@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import type { CmsPage, CmsSectionInput } from '@/lib/supabase/cms';
+import type { CmsPage, CmsSectionInput, ButtonVariant } from '@/lib/supabase/cms';
 import { SectionEditor } from '@/components/admin/sections/SectionEditor';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,24 @@ import { PageHeader } from '@/components/admin/ui/PageHeader';
 import { SeoAssist } from '@/components/admin/ai/SeoAssist';
 import Link from 'next/link';
 import { ArrowLeft, Eye } from 'lucide-react';
+
+async function openPreview(
+  slug: string | null,
+  meta: Record<string, unknown>,
+  sections: CmsSectionInput[]
+) {
+  const res = await fetch('/api/admin/preview/draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      content: { type: 'page', meta, sections },
+      slug: slug ?? '__new__',
+    }),
+  });
+  if (!res.ok) return;
+  const { token } = (await res.json()) as { token: string };
+  window.open(`/preview/page/${slug ?? '__new__'}?token=${token}`, '_blank', 'noopener');
+}
 
 type MetaFields = {
   title: string;
@@ -36,13 +54,19 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, '');
 }
 
-export function PageEditForm({ page }: { page?: CmsPage }) {
+export function PageEditForm({
+  page,
+  buttonVariants = [],
+}: {
+  page?: CmsPage;
+  buttonVariants?: ButtonVariant[];
+}) {
   const router = useRouter();
   const isNew = !page;
 
   const [sections, setSections] = useState<CmsSectionInput[]>(
     page?.sections?.map(
-      ({ sort_order, type, content, image_url, image_alt, button_text, button_link, html }) => ({
+      ({
         sort_order,
         type,
         content,
@@ -51,6 +75,17 @@ export function PageEditForm({ page }: { page?: CmsPage }) {
         button_text,
         button_link,
         html,
+        button_variant_slug,
+      }) => ({
+        sort_order,
+        type,
+        content,
+        image_url,
+        image_alt,
+        button_text,
+        button_link,
+        html,
+        button_variant_slug: button_variant_slug ?? null,
       })
     ) ?? []
   );
@@ -207,7 +242,11 @@ export function PageEditForm({ page }: { page?: CmsPage }) {
                 {errors.slug && <p className="text-xs text-red-600 mt-1">{errors.slug.message}</p>}
               </div>
             </div>
-            <SectionEditor sections={sections} onChange={setSections} />
+            <SectionEditor
+              sections={sections}
+              onChange={setSections}
+              buttonVariants={buttonVariants}
+            />
           </div>
 
           {/* Meta sidebar */}
@@ -364,19 +403,30 @@ export function PageEditForm({ page }: { page?: CmsPage }) {
               {saving ? 'Saving…' : isNew ? 'Create Page' : 'Save Changes'}
             </Button>
 
-            {!isNew && (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full"
-                onClick={() =>
-                  window.open(`https://www.arrow.taxi/${page!.slug}`, '_blank', 'noopener')
-                }
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Preview page
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                const meta = {
+                  title: watch('title'),
+                  slug: watch('slug'),
+                  meta_title: watch('meta_title') || null,
+                  meta_description: watch('meta_description') || null,
+                  meta_keywords: watch('meta_keywords') || null,
+                  canonical_url: watch('canonical_url') || null,
+                  og_image_url: watch('og_image_url') || null,
+                  google_tag: watch('google_tag') || null,
+                  is_published: watch('is_published'),
+                  is_in_header: watch('is_in_header'),
+                  has_booking_button: watch('has_booking_button'),
+                };
+                void openPreview(isNew ? null : page!.slug, meta, sections);
+              }}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Preview draft
+            </Button>
           </div>
         </div>
       </form>
