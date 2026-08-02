@@ -1,6 +1,5 @@
 'use client';
 
-import { Content, Footer, Header } from 'antd/es/layout/layout';
 import { ConfigProvider } from 'antd';
 import { usePathname } from 'next/navigation';
 import { HeaderComponent } from '@/components/Shared/Header/HeaderComponent';
@@ -23,14 +22,14 @@ export function RootShell({ children }: { children: React.ReactNode }) {
     <div className="w-full max-w-[1440px] mx-auto">
       <QueryProvider>
         <ConfigProvider theme={{ token: { fontFamily: 'var(--font-roboto), Arial, sans-serif' } }}>
-          <Header className="w-full fixed top-0 right-0 h-[88px] tabletlg:h-[97.14px] z-50 bg-[#fff] !p-0">
+          <header className="w-full fixed top-0 right-0 h-[88px] tabletlg:h-[97.14px] z-50 bg-white">
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-full max-w-[1440px] mx-auto h-full tabletlg:px-[15px] px-[40px]">
                 <HeaderComponent />
               </div>
             </div>
-          </Header>
-          <Content className="mt-[64px] sm:mt-[70px]">
+          </header>
+          <main className="mt-[64px] sm:mt-[70px]">
             <Banner />
             <div className="relative px-16 mobile:px-6 pb-8">
               {isFullBleed ? (
@@ -44,10 +43,10 @@ export function RootShell({ children }: { children: React.ReactNode }) {
                 </div>
               )}
             </div>
-          </Content>
-          <Footer className="w-full bg-[#fff] h-auto !p-0 mt-10 mobilelg:mt-6">
+          </main>
+          <div className="w-full mt-10 mobilelg:mt-6">
             <FooterComponent />
-          </Footer>
+          </div>
           <MobileCtaBar />
         </ConfigProvider>
       </QueryProvider>

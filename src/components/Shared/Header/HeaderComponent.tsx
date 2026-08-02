@@ -103,7 +103,7 @@ export const HeaderComponent = () => {
           <Link
             href={PHONE_HREF}
             aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-            className="text-primary_color text-[17px] font-[600] whitespace-nowrap flex items-center min-h-[44px] px-1"
+            className="text-primary_color text-[22px] mobile:text-[20px] font-[700] whitespace-nowrap flex items-center min-h-[44px] px-1"
           >
             {PHONE_DISPLAY}
           </Link>
