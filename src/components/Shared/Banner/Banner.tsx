@@ -126,7 +126,7 @@ export const Banner = () => {
         </div>
 
         {socialIcons.length > 0 && (
-          <div className="flex items-center gap-x-4 mobile:gap-x-3 pt-2">
+          <div className="flex items-center gap-x-2 mobile:gap-x-1 pt-2 flex-nowrap">
             {socialIcons.map((item, index) => {
               const meta = SOCIAL_ICON_META[item.icon];
               if (!meta) return null;
@@ -137,13 +137,13 @@ export const Banner = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Arrow Taxi on ${meta.label}`}
-                  className="flex items-center justify-center w-[52px] h-[52px] mobile:w-[44px] mobile:h-[44px] rounded-full transition-colors hover:bg-white/10"
+                  className="flex items-center justify-center w-[56px] h-[56px] mobile:w-[46px] mobile:h-[46px] rounded-full transition-colors hover:bg-white/10"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={meta.src}
                     alt=""
-                    className="w-[34px] h-[34px] mobile:w-[28px] mobile:h-[28px] invert brightness-0"
+                    className="w-[36px] h-[36px] mobile:w-[30px] mobile:h-[30px] invert brightness-0"
                     style={{ filter: 'brightness(0) invert(1)' }}
                   />
                 </Link>

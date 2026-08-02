@@ -19,7 +19,7 @@ import { BookingButton } from '../BookingButton/BookingButton';
 
 // 44px min height keeps every footer link a valid touch target on phones.
 const linkClass =
-  'flex items-center min-h-[44px] hover:underline font-[400] text-[16px] leading-[22px] text-white';
+  'flex items-center min-h-[44px] hover:underline font-[400] text-[16px] leading-[22px] !text-white hover:!text-white';
 
 export const FooterComponent = () => {
   const { data, isLoading } = usePagesLink();
@@ -49,40 +49,45 @@ export const FooterComponent = () => {
         />
       </div>
 
-      <Row className="bg-primary_color text-white p-[72px] tabletlg:p-[40px] mobile:p-[24px] h-full gap-y-[30px]">
+      <Row
+        gutter={[0, 56]}
+        className="bg-primary_color text-white p-[72px] tabletlg:p-[40px] mobile:p-[24px] h-full"
+      >
         {/* Brand + booking CTA */}
-        <Col className="flex flex-col gap-[32px]" xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
-          <Image
-            src="/Assets/Images/logoFooter.svg"
-            alt="Arrow Taxi Bangor"
-            preview={false}
-            width={200}
-            height={66}
-          />
-          <p className="leading-[28px] text-[14px] font-[400] max-w-[340px]">
-            Book a taxi online or give us a call on {PHONE_DISPLAY}. We offer cheap airport runs,
-            Snowdonia taxi services, tours, and photo tours.
-          </p>
-          <div className="w-full max-w-[280px]">
-            <BookingButton />
-          </div>
-          <div className="flex gap-[8px] items-center flex-wrap">
-            {socialIcons.map((item, index) => {
-              const meta = SOCIAL_ICON_META[item.icon];
-              if (!meta) return null;
-              return (
-                <Link
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key={`${item.icon}-${index}`}
-                  aria-label={`Arrow Taxi on ${meta.label}`}
-                  className="flex items-center justify-center w-[52px] h-[52px] rounded-full transition-colors hover:bg-white/10"
-                >
-                  <Image src={meta.src} width={30} height={30} alt="" preview={false} />
-                </Link>
-              );
-            })}
+        <Col xxl={10} xl={10} lg={10} md={24} sm={24} xs={24}>
+          <div className="flex flex-col gap-[24px] items-start">
+            <Image
+              src="/Assets/Images/logoFooter.svg"
+              alt="Arrow Taxi Bangor"
+              preview={false}
+              width={200}
+              height={66}
+            />
+            <p className="leading-[28px] text-[14px] font-[400] max-w-[340px]">
+              Book a taxi online or give us a call on {PHONE_DISPLAY}. We offer cheap airport runs,
+              Snowdonia taxi services, tours, and photo tours.
+            </p>
+            <div className="w-full max-w-[280px]">
+              <BookingButton />
+            </div>
+            <div className="flex gap-[4px] items-center flex-nowrap">
+              {socialIcons.map((item, index) => {
+                const meta = SOCIAL_ICON_META[item.icon];
+                if (!meta) return null;
+                return (
+                  <Link
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key={`${item.icon}-${index}`}
+                    aria-label={`Arrow Taxi on ${meta.label}`}
+                    className="flex items-center justify-center w-[52px] h-[52px] rounded-full transition-colors hover:bg-white/10"
+                  >
+                    <Image src={meta.src} width={32} height={32} alt="" preview={false} />
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </Col>
 

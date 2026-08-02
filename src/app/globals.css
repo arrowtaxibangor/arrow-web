@@ -411,6 +411,9 @@ input.ant-input:active {
 .areas-cms li {
   break-inside: avoid;
 }
+.areas-cms li::marker {
+  color: #1a1a1a;
+}
 .areas-cms a {
   color: #265ea6;
   text-decoration: underline;
@@ -428,7 +431,12 @@ input.ant-input:active {
 }
 @media (max-width: 575px) {
   .areas-cms ul {
-    columns: 1;
+    columns: 2;
+    column-gap: 12px;
+    padding-left: 0;
+    font-size: 15px;
+    line-height: 28px;
+    list-style-position: inside;
   }
 }
 
