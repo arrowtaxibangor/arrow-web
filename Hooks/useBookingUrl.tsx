@@ -4,6 +4,8 @@ import { useQuery } from 'react-query';
 type SettingsResponse = { bookingUrl: string };
 
 async function fetchBookingUrl(): Promise<string> {
+  // Booking URL temporarily disabled — restore the fetch below when ready
+  return '';
   const res = await fetch('/api/cms/settings');
   if (!res.ok) throw new Error('Failed to load site settings');
   const data: SettingsResponse = await res.json();
