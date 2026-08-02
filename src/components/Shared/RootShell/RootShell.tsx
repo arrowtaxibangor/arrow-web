@@ -22,7 +22,7 @@ export function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full max-w-[1440px] mx-auto">
       <QueryProvider>
-        <ConfigProvider theme={{ token: { fontFamily: 'Roboto' } }}>
+        <ConfigProvider theme={{ token: { fontFamily: 'var(--font-roboto), Arial, sans-serif' } }}>
           <Header className="w-full fixed top-0 right-0 h-[88px] tabletlg:h-[97.14px] z-50 bg-[#fff] !p-0">
             <div className="w-full h-full flex items-center justify-center">
               <div className="w-full max-w-[1440px] mx-auto h-full tabletlg:px-[15px] px-[40px]">

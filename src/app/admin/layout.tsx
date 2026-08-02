@@ -5,7 +5,10 @@ export const metadata: Metadata = { title: 'Arrow Taxi CMS' };
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="admin-root min-h-screen" style={{ fontFamily: 'Roboto, Arial, sans-serif' }}>
+    <div
+      className="admin-root min-h-screen"
+      style={{ fontFamily: 'var(--font-roboto), Arial, sans-serif' }}
+    >
       <AdminShell>{children}</AdminShell>
     </div>
   );

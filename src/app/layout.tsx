@@ -1,8 +1,16 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
+import { Roboto } from 'next/font/google';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { RootShell } from '@/components/Shared/RootShell/RootShell';
+
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['100', '300', '400', '500', '700', '900'],
+  variable: '--font-roboto',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.arrow.taxi'),
@@ -19,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={roboto.variable}>
       <body className="antialiased">
         <Script id="gtm-script" strategy="afterInteractive">
           {`
