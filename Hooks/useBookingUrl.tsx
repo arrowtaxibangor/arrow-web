@@ -21,6 +21,6 @@ export function useBookingUrl() {
   return useQuery(['booking-url'], fetchBookingUrl, {
     retry: false,
     refetchInterval: false,
-    staleTime: Infinity,
+    staleTime: 0,
   });
 }

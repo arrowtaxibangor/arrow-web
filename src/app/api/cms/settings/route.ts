@@ -23,7 +23,7 @@ export async function GET() {
         ctaTextColor: ctaTextColor ?? '#ffffff',
         ctaFontSize: Number.isFinite(ctaFontSize) ? ctaFontSize : 18,
       },
-      { headers: { 'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600' } }
+      { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
     );
   } catch (error) {
     console.error('Failed to read site settings', error);
