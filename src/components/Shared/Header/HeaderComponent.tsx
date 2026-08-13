@@ -90,23 +90,31 @@ export const HeaderComponent = () => {
           />
         </div>
 
-        <Link
+        {/* Plain <a> — Next.js <Link> attaches a click handler that on some
+            mobile browsers swallows repeat clicks on tel: URLs after the first
+            invocation. Native <a href="tel:..."> always re-triggers the dialer. */}
+        <a
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-          className="text-primary_color w-fit text-[36px] whitespace-nowrap font-[600] hidden sm:flex items-center gap-x-[10px]"
+          className="text-primary_color w-fit text-[36px] desktop:text-[26px] tabletlg:text-[20px] whitespace-nowrap font-[600] hidden sm:flex items-center gap-x-[8px] flex-shrink-0"
         >
-          <Image src={'/Assets/Icons/phone.svg'} alt="" preview={false} height={30} width={30} />
+          <Image
+            src={'/Assets/Icons/phone.svg'}
+            alt=""
+            preview={false}
+            className="!w-[26px] !h-[26px] desktop:!w-[22px] desktop:!h-[22px] tabletlg:!w-[18px] tabletlg:!h-[18px]"
+          />
           {PHONE_DISPLAY}
-        </Link>
+        </a>
 
         <div className="sm:hidden flex items-center gap-x-1 headerChild headerChildRight">
-          <Link
+          <a
             href={PHONE_HREF}
             aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
             className="text-primary_color text-[26px] mobile:text-[24px] font-[700] leading-none whitespace-nowrap flex items-center min-h-[44px] px-1"
           >
             {PHONE_DISPLAY}
-          </Link>
+          </a>
           <Button
             className="text-primary_color hover:!text-primary_color flex items-center justify-center hover:!bg-white !min-w-[44px] !min-h-[44px]"
             icon={<MenuOutlined />}

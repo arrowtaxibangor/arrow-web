@@ -177,9 +177,15 @@ input.ant-input:active {
 .bookingForm .ant-select-selector {
   border-radius: 2px !important;
 }
-/* global.css */
+/* Active nav item: keep text size/weight stable to avoid layout shift, shift
+   color to brand blue, and add a subtle gold underline. */
 .navMenu .ant-menu-item-selected a {
-  @apply underline underline-offset-4 !text-primary_color !font-[700] !text-[18px];
+  color: #265ea6 !important;
+  font-weight: 600 !important;
+  text-decoration: underline;
+  text-decoration-color: #fec601;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
 }
 
 .white-placeholder .ant-select-selection-placeholder {

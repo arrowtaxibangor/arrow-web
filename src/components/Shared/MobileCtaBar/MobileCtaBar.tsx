@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import React from 'react';
 import { PHONE_DISPLAY, PHONE_HREF } from '../../../../utils/contact';
 import { BookingButton } from '../BookingButton/BookingButton';
@@ -21,13 +20,16 @@ export const MobileCtaBar = () => {
       <div aria-hidden="true" className="h-[72px] sm:hidden" />
 
       <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch gap-2 border-t border-black/10 bg-white px-3 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] sm:hidden">
-        <Link
+        {/* Plain <a>, not next/link: on iOS Safari repeat clicks on a tel:
+            Link were being swallowed until page reload. Native anchor always
+            re-fires the dialer intent. */}
+        <a
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
           className="flex min-h-[52px] flex-1 items-center justify-center rounded-xl border-2 border-primary_color bg-white px-4 text-[18px] font-bold text-primary_color"
         >
           Call us
-        </Link>
+        </a>
         <BookingButton label="Book Online" size="compact" />
       </div>
     </>

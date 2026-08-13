@@ -4,6 +4,8 @@ import Script from 'next/script';
 import { Roboto } from 'next/font/google';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { RootShell } from '@/components/Shared/RootShell/RootShell';
+import { GtagPageview } from '@/components/Shared/Analytics/GtagPageview';
+import { Suspense } from 'react';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -29,15 +31,27 @@ export default function RootLayout({
   return (
     <html lang="en" className={roboto.variable}>
       <body className="antialiased">
-        <Script id="gtm-script" strategy="afterInteractive">
+        {/* Google tag (gtag.js) — "Arrow Taxi Homepage" tag in Google Tag
+            Manager. Fans out to GA4 (G-R7TJ7GZ231) and Google Ads
+            (AW-953912986) automatically via its configured destinations.
+            `send_page_view: false` disables the built-in auto-pageview so
+            <GtagPageview/> can fire one manual page_view per route change
+            (auto-tracking misses App Router SPA transitions). */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=GT-KD2VRCS7"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
           {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-T3Z3MFW5');
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'GT-KD2VRCS7', { send_page_view: false });
           `}
         </Script>
+        <Suspense fallback={null}>
+          <GtagPageview />
+        </Suspense>
         <AntdRegistry>
           <RootShell>{children}</RootShell>
         </AntdRegistry>
