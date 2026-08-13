@@ -17,9 +17,9 @@ export const MobileCtaBar = () => {
   return (
     <>
       {/* Spacer: reserves the bar's height in normal flow. */}
-      <div aria-hidden="true" className="h-[72px] sm:hidden" />
+      <div aria-hidden="true" className="h-[72px] lg:hidden" />
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch gap-2 border-t border-black/10 bg-white px-3 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] sm:hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-50 flex items-stretch gap-2 border-t border-black/10 bg-white px-3 py-2 shadow-[0_-2px_10px_rgba(0,0,0,0.08)] lg:hidden">
         {/* Plain <a>, not next/link: on iOS Safari repeat clicks on a tel:
             Link were being swallowed until page reload. Native anchor always
             re-fires the dialer intent. */}

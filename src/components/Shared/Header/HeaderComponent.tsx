@@ -80,7 +80,7 @@ export const HeaderComponent = () => {
             measures for its overflow calculation. The items also genuinely did
             not fit (~1021px of links in ~965px), so .navMenu .ant-menu-item in
             globals.css tightens the per-item padding to bring them under. */}
-        <div className="hidden sm:flex flex-1 justify-center">
+        <div className="hidden lg:flex flex-1 justify-center">
           <Menu
             mode="horizontal"
             className="!border-none navMenu w-full flex justify-center"
@@ -96,18 +96,18 @@ export const HeaderComponent = () => {
         <a
           href={PHONE_HREF}
           aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
-          className="text-primary_color w-fit text-[36px] desktop:text-[26px] tabletlg:text-[20px] whitespace-nowrap font-[600] hidden sm:flex items-center gap-x-[8px] flex-shrink-0"
+          className="text-primary_color w-fit text-[36px] desktop:text-[30px] whitespace-nowrap font-[600] hidden lg:flex items-center gap-x-[8px] flex-shrink-0"
         >
           <Image
             src={'/Assets/Icons/phone.svg'}
             alt=""
             preview={false}
-            className="!w-[26px] !h-[26px] desktop:!w-[22px] desktop:!h-[22px] tabletlg:!w-[18px] tabletlg:!h-[18px]"
+            className="!w-[26px] !h-[26px] desktop:!w-[22px] desktop:!h-[22px]"
           />
           {PHONE_DISPLAY}
         </a>
 
-        <div className="sm:hidden flex items-center gap-x-1 headerChild headerChildRight">
+        <div className="lg:hidden flex items-center gap-x-1 headerChild headerChildRight">
           <a
             href={PHONE_HREF}
             aria-label={`Call Arrow Taxi on ${PHONE_DISPLAY}`}
@@ -130,7 +130,7 @@ export const HeaderComponent = () => {
         placement="right"
         onClose={toggleDrawer}
         open={isDrawerOpen}
-        className="sm:hidden"
+        className="lg:hidden"
       >
         <Menu
           mode="vertical"
