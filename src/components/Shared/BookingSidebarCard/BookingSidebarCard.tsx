@@ -89,6 +89,7 @@ export function BookingSidebarCard() {
         <BookingButton
           label="Book Taxi Now"
           size="sidebar"
+          location="sidebar_card"
           trailingIcon={
             <svg
               className="w-4 h-4"

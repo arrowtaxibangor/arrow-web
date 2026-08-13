@@ -16,7 +16,12 @@ type BookingButtonProps = {
   size?: BookingButtonSize;
   /** Optional icon rendered after the label */
   trailingIcon?: React.ReactNode;
+  /** Where on the site this button is rendered — sent to analytics so we
+   *  can compare conversion by placement (hero, mobile bar, sidebar, etc.). */
+  location?: string;
 };
+
+type GtagFn = (command: 'event', eventName: string, params: Record<string, unknown>) => void;
 
 const BASE_CLASSES =
   'inline-flex items-center justify-center gap-2 rounded-xl font-bold shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary_color';
@@ -40,6 +45,7 @@ export const BookingButton = ({
   className = '',
   size = 'default',
   trailingIcon,
+  location,
 }: BookingButtonProps) => {
   const { data: urlData } = useBookingUrl();
   const { data: ctaStyle } = useCtaStyle();
@@ -53,6 +59,18 @@ export const BookingButton = ({
     fontSize: FIXED_FONT_SIZE[size] ?? style.fontSize,
   };
 
+  const handleClick = () => {
+    if (typeof window === 'undefined') return;
+    const w = window as unknown as { gtag?: GtagFn };
+    if (typeof w.gtag !== 'function') return;
+    w.gtag('event', 'book_online_click', {
+      location: location ?? 'unknown',
+      label,
+      destination,
+      page_path: window.location.pathname,
+    });
+  };
+
   return (
     <Link
       href={destination}
@@ -60,6 +78,7 @@ export const BookingButton = ({
       rel={isExternal ? 'noopener noreferrer' : undefined}
       className={`${BASE_CLASSES} ${SIZE_CLASSES[size]} ${className}`}
       style={inlineStyle}
+      onClick={handleClick}
     >
       {label}
       {trailingIcon}

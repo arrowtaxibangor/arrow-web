@@ -25,7 +25,7 @@ const ReviewCard = ({ review }: { review: any }) => {
     // Height is fixed rather than content-driven so every slide lines up;
     // expanding a long review scrolls inside the card instead of stretching
     // the carousel track and shifting its neighbours.
-    <div className="w-full h-[390px] bg-[#F7F7F8] flex flex-col border border-solid border-[#E5E5EA] p-[24px] mobilelg:p-[20px] rounded-[10px]">
+    <div className="w-full h-[390px] bg-[#F7F7F8] flex flex-col border border-solid border-[#E5E5EA] p-[24px] mobilelg:p-[20px] rounded-[10px] shadow-md hover:shadow-lg transition-shadow duration-200">
       <div className="flex flex-row gap-3 border-b border-solid border-[#E5E5EA] pb-6 flex-shrink-0">
         <div>
           {review?.profilePhoto ? (

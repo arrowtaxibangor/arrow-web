@@ -134,9 +134,9 @@ export const HeaderComponent = () => {
       >
         <Menu
           mode="vertical"
-          defaultSelectedKeys={['1']}
+          selectedKeys={[selectedKey]}
           items={menuItems}
-          className="bg-transparent !text-primary_color flex flex-col"
+          className="bg-transparent !text-primary_color flex flex-col navMenu"
         />
       </Drawer>
     </div>

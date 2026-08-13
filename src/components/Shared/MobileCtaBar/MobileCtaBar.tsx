@@ -30,7 +30,7 @@ export const MobileCtaBar = () => {
         >
           Call us
         </a>
-        <BookingButton label="Book Online" size="compact" />
+        <BookingButton label="Book Online" size="compact" location="mobile_cta_bar" />
       </div>
     </>
   );

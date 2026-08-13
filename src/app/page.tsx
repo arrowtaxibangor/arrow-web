@@ -149,7 +149,7 @@ export default async function Home() {
             {heroSubtext}
           </p>
           <div className="w-full max-w-[320px] sm:max-w-none flex justify-center">
-            <BookingButton label={heroCta} />
+            <BookingButton label={heroCta} location="homepage_hero" />
           </div>
         </div>
       </div>

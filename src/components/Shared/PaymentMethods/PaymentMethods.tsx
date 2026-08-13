@@ -20,14 +20,16 @@ const PaymentMethods = () => {
             Payment Methods
           </h2>
         </div>
-        <div className="flex flex-row flex-wrap gap-[50px] mobilelg:gap-[24px] justify-center">
+        {/* Single-row layout: nowrap + shrinking gaps + shrinking icons so
+            all five methods stay on one line down to the smallest phone. */}
+        <div className="flex flex-row flex-nowrap items-center justify-center gap-[40px] tabletlg:gap-[24px] mobilelg:gap-[12px] mobile:gap-[8px] w-full">
           {PaymentMethodIcons?.map((method) => (
             <Image
               key={method?.id}
               alt={`We accept ${method.label}`}
               preview={false}
               src={method?.src}
-              className="w-[90px] h-[60px] mobilelg:!h-[35px] mobilelg:!w-[65px] tabletlg:!h-[45px] tabletlg:w-[75px]"
+              className="!w-[80px] !h-[55px] tabletlg:!w-[65px] tabletlg:!h-[45px] mobilelg:!w-[52px] mobilelg:!h-[36px] mobile:!w-[42px] mobile:!h-[30px] flex-shrink"
             />
           ))}
         </div>
@@ -41,7 +43,7 @@ const PaymentMethods = () => {
           Ready to go? Book online in under a minute.
         </p>
         <div className="w-full max-w-[320px] sm:max-w-none flex justify-center">
-          <BookingButton />
+          <BookingButton location="payment_methods_below" />
         </div>
       </div>
     </>
